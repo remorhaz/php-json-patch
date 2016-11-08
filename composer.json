@@ -1,0 +1,32 @@
+{
+  "name": "remorhaz/php-json-patch",
+  "description": "JSON Patch (RFC-6902) PHP implementation",
+  "keywords": ["json", "json patch", "RFC6902"],
+  "homepage": "https://github.com/remorhaz/php-json-patch",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Edward Surov",
+      "email": "zoohie@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "remorhaz/php-json-data": "0.1.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "@stable",
+    "codeclimate/php-test-reporter": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Remorhaz\\JSON\\Patch\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Remorhaz\\JSON\\Test\\Patch\\": "tests/"
+    }
+  }
+}
