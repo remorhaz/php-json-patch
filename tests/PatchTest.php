@@ -63,7 +63,26 @@ class PatchTest extends \PHPUnit_Framework_TestCase
                 ],
                 (object) ['baz' => 'boo', 'foo' => 'bar'],
             ],
-            // TODO: Implement A.6-7.
+            'A.6' => [
+                (object) [
+                    'foo' => (object) ['bar' => 'baz', 'waldo' => 'fred'],
+                    'qux' => (object) ['corge' => 'grault'],
+                ],
+                [
+                    (object) ['op' => 'move', 'from' => '/foo/waldo', 'path' => '/qux/thud'],
+                ],
+                (object) [
+                    'foo' => (object) ['bar' => 'baz'],
+                    'qux' => (object) ['corge' => 'grault', 'thud' => 'fred'],
+                ],
+            ],
+            'A.7' => [
+                (object) ['foo' => ['all', 'grass', 'cows', 'eat']],
+                [
+                    (object) ['op' => 'move', 'from' => '/foo/1', 'path' => '/foo/3'],
+                ],
+                (object) ['foo' => ['all', 'cows', 'eat', 'grass']],
+            ],
             'A.10' => [
                 (object) ['foo' => 'bar'],
                 [

@@ -66,6 +66,20 @@ class Patch
                 }
                 break;
 
+            case 'copy':
+                $from = $patchPointer->read("/{$index}/from")->getData();
+                $valueReader = $dataPointer->read($from);
+                $dataPointer->add($path, $valueReader);
+                break;
+
+            case 'move':
+                $from = $patchPointer->read("/{$index}/from")->getData();
+                $valueReader = $dataPointer->read($from);
+                $dataPointer
+                    ->remove($from)
+                    ->add($path, $valueReader);
+                break;
+
             default:
                 throw new \Exception("Unknown operation '{$op}'");
         }
