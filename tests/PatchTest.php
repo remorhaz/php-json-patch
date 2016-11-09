@@ -51,7 +51,7 @@ class PatchTest extends \PHPUnit_Framework_TestCase
      * @param mixed $data
      * @param array $patchData
      * @dataProvider providerInvalidPatch
-     * @expectedException \Exception
+     * @expectedException \RuntimeException
      */
     public function testApply_InvalidSpecPatch_ExceptionThrown($data, array $patchData)
     {
@@ -121,7 +121,7 @@ class PatchTest extends \PHPUnit_Framework_TestCase
      * @param mixed $data
      * @param array $patchData
      * @dataProvider providerInvalidPatch
-     * @expectedException \Exception
+     * @expectedException \RuntimeException
      */
     public function testApply_InvalidPatch_ExceptionThrown($data, array $patchData)
     {

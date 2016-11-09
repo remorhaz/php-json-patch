@@ -8,81 +8,125 @@ use Remorhaz\JSON\Pointer\Pointer;
 class Patch
 {
 
-    private $reader;
+    private $dataReader;
+
+    private $patchReader;
+
+    private $dataPointer;
+
+    private $patchPointer;
 
 
-    public function __construct(SelectableReaderInterface $reader)
+    public function __construct(SelectableReaderInterface $dataReader)
     {
-        $this->reader = $reader;
+        $this->dataReader = $dataReader;
     }
 
 
     public function apply(SelectableReaderInterface $patchReader)
     {
-        $patchReader->selectRoot();
-        if (!$patchReader->isArraySelected()) {
-            throw new \Exception("Patch must be an array");
+        $this
+            ->setPatchReader($patchReader)
+            ->getPatchReader()
+            ->selectRoot();
+        if (!$this->getPatchReader()->isArraySelected()) {
+            throw new \RuntimeException("Patch must be an array");
         }
-        $operationCount = $patchReader->getElementCount();
+        $operationCount = $this
+            ->getPatchReader()
+            ->getElementCount();
         for ($operationIndex = 0; $operationIndex < $operationCount; $operationIndex++) {
-            $this->performOperation($operationIndex, $patchReader);
+            $this->performOperation($operationIndex);
         }
         return $this;
     }
 
 
-    protected function getReader(): SelectableReaderInterface
+    protected function getDataReader(): SelectableReaderInterface
     {
-        return $this->reader;
+        return $this->dataReader;
     }
 
 
-    protected function performOperation(int $index, SelectableReaderInterface $patchReader)
+    protected function performOperation(int $index)
     {
-        $patchPointer = new Pointer($patchReader);
-        $op = $patchPointer->read("/{$index}/op")->getData();
-        $path = $patchPointer->read("/{$index}/path")->getData();
-        $dataPointer = new Pointer($this->getReader());
+        $op = $this->getPatchPointer()->read("/{$index}/op")->getData();
+        $path = $this->getPatchPointer()->read("/{$index}/path")->getData();
         switch ($op) {
             case 'add':
-                $valueReader = $patchPointer->read("/{$index}/value");
-                $dataPointer->add($path, $valueReader);
+                $valueReader = $this->getPatchPointer()->read("/{$index}/value");
+                $this->getDataPointer()->add($path, $valueReader);
                 break;
 
             case 'remove':
-                $dataPointer->remove($path);
+                $this->getDataPointer()->remove($path);
                 break;
 
             case 'replace':
-                $valueReader = $patchPointer->read("/{$index}/value");
-                $dataPointer->replace($path, $valueReader);
+                $valueReader = $this->getPatchPointer()->read("/{$index}/value");
+                $this->getDataPointer()->replace($path, $valueReader);
                 break;
 
             case 'test':
-                $expectedValueReader = $patchPointer->read("/{$index}/value");
-                $actualValueReader = $dataPointer->read($path);
+                $expectedValueReader = $this->getPatchPointer()->read("/{$index}/value");
+                $actualValueReader = $this->getDataPointer()->read($path);
                 if ($expectedValueReader->getData() !== $actualValueReader->getData()) {
-                    throw new \Exception("Test operation failed");
+                    throw new \RuntimeException("Test operation failed");
                 }
                 break;
 
             case 'copy':
-                $from = $patchPointer->read("/{$index}/from")->getData();
-                $valueReader = $dataPointer->read($from);
-                $dataPointer->add($path, $valueReader);
+                $from = $this->getPatchPointer()->read("/{$index}/from")->getData();
+                $valueReader = $this->getDataPointer()->read($from);
+                $this->getDataPointer()->add($path, $valueReader);
                 break;
 
             case 'move':
-                $from = $patchPointer->read("/{$index}/from")->getData();
-                $valueReader = $dataPointer->read($from);
-                $dataPointer
+                $from = $this->getPatchPointer()->read("/{$index}/from")->getData();
+                $valueReader = $this->getDataPointer()->read($from);
+                $this
+                    ->getDataPointer()
                     ->remove($from)
                     ->add($path, $valueReader);
                 break;
 
             default:
-                throw new \Exception("Unknown operation '{$op}'");
+                throw new \RuntimeException("Unknown operation '{$op}'");
         }
         return $this;
+    }
+
+
+    protected function setPatchReader(SelectableReaderInterface $patchReader)
+    {
+        $this->patchReader = $patchReader;
+        return $this;
+    }
+
+
+    protected function getPatchReader(): SelectableReaderInterface
+    {
+        if (null === $this->patchReader) {
+            throw new \LogicException("Patch reader is not set");
+        }
+        return $this->patchReader;
+    }
+
+
+    protected function getPatchPointer(): Pointer
+    {
+        if (null === $this->patchPointer) {
+            $this->patchPointer = new Pointer($this->getPatchReader());
+        }
+        return $this->patchPointer;
+    }
+
+
+    protected function getDataPointer(): Pointer
+    {
+        if (null === $this->dataPointer) {
+            $this->dataPointer = new Pointer($this->getDataReader());
+        }
+        return $this->dataPointer;
     }
 }
