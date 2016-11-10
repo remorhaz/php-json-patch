@@ -50,9 +50,9 @@ class Patch
 
     protected function performOperation(int $index)
     {
-        $op = $this->getPatchPointer()->read("/{$index}/op")->getData();
+        $operation = $this->getPatchPointer()->read("/{$index}/op")->getData();
         $path = $this->getPatchPointer()->read("/{$index}/path")->getData();
-        switch ($op) {
+        switch ($operation) {
             case 'add':
                 $valueReader = $this->getPatchPointer()->read("/{$index}/value");
                 $this->getDataPointer()->add($path, $valueReader);
@@ -91,7 +91,7 @@ class Patch
                 break;
 
             default:
-                throw new \RuntimeException("Unknown operation '{$op}'");
+                throw new \RuntimeException("Unknown operation '{$operation}'");
         }
         return $this;
     }
