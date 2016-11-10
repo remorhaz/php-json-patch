@@ -2,38 +2,38 @@
 
 namespace Remorhaz\JSON\Patch;
 
-use Remorhaz\JSON\Data\SelectableReaderInterface;
+use Remorhaz\JSON\Data\SelectorInterface;
 use Remorhaz\JSON\Pointer\Pointer;
 
 class Patch
 {
 
-    private $dataReader;
+    private $dataSelector;
 
-    private $patchReader;
+    private $patchSelector;
 
     private $dataPointer;
 
     private $patchPointer;
 
 
-    public function __construct(SelectableReaderInterface $dataReader)
+    public function __construct(SelectorInterface $dataSelector)
     {
-        $this->dataReader = $dataReader;
+        $this->dataSelector = $dataSelector;
     }
 
 
-    public function apply(SelectableReaderInterface $patchReader)
+    public function apply(SelectorInterface $patchSelector)
     {
         $this
-            ->setPatchReader($patchReader)
-            ->getPatchReader()
+            ->setPatchSelector($patchSelector)
+            ->getPatchSelector()
             ->selectRoot();
-        if (!$this->getPatchReader()->isArraySelected()) {
+        if (!$this->getPatchSelector()->isArray()) {
             throw new \RuntimeException("Patch must be an array");
         }
         $operationCount = $this
-            ->getPatchReader()
+            ->getPatchSelector()
             ->getElementCount();
         for ($operationIndex = 0; $operationIndex < $operationCount; $operationIndex++) {
             $this->performOperation($operationIndex);
@@ -42,16 +42,16 @@ class Patch
     }
 
 
-    protected function getDataReader(): SelectableReaderInterface
+    protected function getDataSelector(): SelectorInterface
     {
-        return $this->dataReader;
+        return $this->dataSelector;
     }
 
 
     protected function performOperation(int $index)
     {
-        $operation = $this->getPatchPointer()->read("/{$index}/op")->getData();
-        $path = $this->getPatchPointer()->read("/{$index}/path")->getData();
+        $operation = $this->getPatchPointer()->read("/{$index}/op")->getAsString();
+        $path = $this->getPatchPointer()->read("/{$index}/path")->getAsString();
         switch ($operation) {
             case 'add':
                 $valueReader = $this->getPatchPointer()->read("/{$index}/value");
@@ -70,19 +70,19 @@ class Patch
             case 'test':
                 $expectedValueReader = $this->getPatchPointer()->read("/{$index}/value");
                 $actualValueReader = $this->getDataPointer()->read($path);
-                if ($expectedValueReader->getData() !== $actualValueReader->getData()) {
+                if ($expectedValueReader->getAsStruct() !== $actualValueReader->getAsStruct()) {
                     throw new \RuntimeException("Test operation failed");
                 }
                 break;
 
             case 'copy':
-                $from = $this->getPatchPointer()->read("/{$index}/from")->getData();
+                $from = $this->getPatchPointer()->read("/{$index}/from")->getAsString();
                 $valueReader = $this->getDataPointer()->read($from);
                 $this->getDataPointer()->add($path, $valueReader);
                 break;
 
             case 'move':
-                $from = $this->getPatchPointer()->read("/{$index}/from")->getData();
+                $from = $this->getPatchPointer()->read("/{$index}/from")->getAsString();
                 $valueReader = $this->getDataPointer()->read($from);
                 $this
                     ->getDataPointer()
@@ -97,26 +97,26 @@ class Patch
     }
 
 
-    protected function setPatchReader(SelectableReaderInterface $patchReader)
+    protected function setPatchSelector(SelectorInterface $patchReader)
     {
-        $this->patchReader = $patchReader;
+        $this->patchSelector = $patchReader;
         return $this;
     }
 
 
-    protected function getPatchReader(): SelectableReaderInterface
+    protected function getPatchSelector(): SelectorInterface
     {
-        if (null === $this->patchReader) {
+        if (null === $this->patchSelector) {
             throw new \LogicException("Patch reader is not set");
         }
-        return $this->patchReader;
+        return $this->patchSelector;
     }
 
 
     protected function getPatchPointer(): Pointer
     {
         if (null === $this->patchPointer) {
-            $this->patchPointer = new Pointer($this->getPatchReader());
+            $this->patchPointer = new Pointer($this->getPatchSelector());
         }
         return $this->patchPointer;
     }
@@ -125,7 +125,7 @@ class Patch
     protected function getDataPointer(): Pointer
     {
         if (null === $this->dataPointer) {
-            $this->dataPointer = new Pointer($this->getDataReader());
+            $this->dataPointer = new Pointer($this->getDataSelector());
         }
         return $this->dataPointer;
     }

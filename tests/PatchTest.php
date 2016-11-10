@@ -2,8 +2,8 @@
 
 namespace Remorhaz\JSON\Test\Patch;
 
-use Remorhaz\JSON\Data\RawSelectableReader;
-use Remorhaz\JSON\Data\RawSelectableWriter;
+use Remorhaz\JSON\Data\Reference\Selector;
+use Remorhaz\JSON\Data\Reference\Writer;
 use Remorhaz\JSON\Patch\Patch;
 
 class PatchTest extends \PHPUnit_Framework_TestCase
@@ -18,9 +18,9 @@ class PatchTest extends \PHPUnit_Framework_TestCase
      */
     public function testApply_ValidSpecPatch_Applied($data, array $patchData, $expectedData)
     {
-        $dataWriter = new RawSelectableWriter($data);
-        $patchDataReader = new RawSelectableReader($patchData);
-        (new Patch($dataWriter))->apply($patchDataReader);
+        $dataWriter = new Writer($data);
+        $patchDataSelector = new Selector($patchData);
+        (new Patch($dataWriter))->apply($patchDataSelector);
         $this->assertEquals($expectedData, $data);
     }
 
@@ -55,9 +55,9 @@ class PatchTest extends \PHPUnit_Framework_TestCase
      */
     public function testApply_InvalidSpecPatch_ExceptionThrown($data, array $patchData)
     {
-        $dataWriter = new RawSelectableWriter($data);
-        $patchDataReader = new RawSelectableReader($patchData);
-        (new Patch($dataWriter))->apply($patchDataReader);
+        $dataWriter = new Writer($data);
+        $patchDataSelector = new Selector($patchData);
+        (new Patch($dataWriter))->apply($patchDataSelector);
     }
 
 
@@ -89,9 +89,9 @@ class PatchTest extends \PHPUnit_Framework_TestCase
      */
     public function testApply_ValidPatch_Applied($data, array $patchData, $expectedData)
     {
-        $dataWriter = new RawSelectableWriter($data);
-        $patchDataReader = new RawSelectableReader($patchData);
-        (new Patch($dataWriter))->apply($patchDataReader);
+        $dataWriter = new Writer($data);
+        $patchDataSelector = new Selector($patchData);
+        (new Patch($dataWriter))->apply($patchDataSelector);
         $this->assertEquals($expectedData, $data);
     }
 
@@ -125,9 +125,9 @@ class PatchTest extends \PHPUnit_Framework_TestCase
      */
     public function testApply_InvalidPatch_ExceptionThrown($data, array $patchData)
     {
-        $dataWriter = new RawSelectableWriter($data);
-        $patchDataReader = new RawSelectableReader($patchData);
-        (new Patch($dataWriter))->apply($patchDataReader);
+        $dataWriter = new Writer($data);
+        $patchDataSelector = new Selector($patchData);
+        (new Patch($dataWriter))->apply($patchDataSelector);
     }
 
 
