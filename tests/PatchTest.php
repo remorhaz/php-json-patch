@@ -154,14 +154,14 @@ class PatchTest extends \PHPUnit_Framework_TestCase
 
     private function getSpecTests(): array
     {
-        $testsFile = dirname(realpath(PHPUNIT_COMPOSER_INSTALL)) . "/../tests/data/spec_tests.json";
+        $testsFile = realpath(__DIR__ . "/data/spec_tests.json");
         return $this->getTestInfoList($testsFile);
     }
 
 
     private function getTests(): array
     {
-        $testsFile = dirname(realpath(PHPUNIT_COMPOSER_INSTALL)) . "/../tests/data//tests.json";
+        $testsFile = realpath(__DIR__ . "/data/tests.json");
         return $this->getTestInfoList($testsFile);
     }
 
