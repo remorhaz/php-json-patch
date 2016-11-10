@@ -1,0 +1,64 @@
+# PHP JSON Patch
+
+[![Latest Stable Version](https://poser.pugx.org/remorhaz/php-json-patch/v/stable)](https://packagist.org/packages/remorhaz/php-json-patch)
+[![License](https://poser.pugx.org/remorhaz/php-json-patch/license)](https://packagist.org/packages/remorhaz/php-json-patch)
+[![Build Status](https://travis-ci.org/remorhaz/php-json-patch.svg?branch=master)](https://travis-ci.org/remorhaz/php-json-patch)
+[![Code Climate](https://codeclimate.com/github/remorhaz/php-json-patch/badges/gpa.svg)](https://codeclimate.com/github/remorhaz/php-json-patch)
+[![Test Coverage](https://codeclimate.com/github/remorhaz/php-json-patch/badges/coverage.svg)](https://codeclimate.com/github/remorhaz/php-json-patch/coverage)
+
+This library implements [RFC6902](https://tools.ietf.org/html/rfc6902)-compliant JSON patch tool.
+
+##Requirements
+* PHP 7.0+
+
+##Features
+* Supports PHP 7.0
+* No PHP extensions required
+* Throws SPL exceptions
+
+#License
+PHP JSON Patch is licensed under MIT license.
+
+#Installation
+You will need [composer](https://getcomposer.org) to perform install.
+```
+composer require remorhaz/php-json-patch
+```
+
+#Documentation
+## Data accessors
+Patch tool utilizes JSON data accessor interfaces defined in package
+**[remorhaz/php-json-data](https://github.com/remorhaz/php-json-data)**. Read more about them in package documentation.
+There is a ready-to-work implementation in that package that works with native PHP structures (like the ones you get as
+a result of `json_decode` function). You can use `RawSelectableReader` class to bind to patch data and
+`RawSelectableWriter` class to bind to the document that is to be patched. You can also implement your own accessors
+if you need to work with another sort of data (like unparsed JSON text, for example).
+
+## Using patch tool
+To apply JSON Patch to the JSON document you need just 4 simple steps:
+
+1. Create an instance of read-only accessor bound to your patch data.
+2. Create an instance of writabe accessor bound to your document.
+3. Create an object of `\Remorhaz\JSON\Patch\Patch` by calling it's constructor with a document accessor as an argument.
+4. Call its `apply()` method with patch accessor as an argument.
+
+##Example of usage
+```php
+<?php
+
+use \Remorhaz\JSON\Data\RawSelectableReader;
+use \Remorhaz\JSON\Data\RawSelectableWriter;
+use \Remorhaz\JSON\Patch\Patch;
+
+// Setting up document.
+$data = (object) ['a' => (object) ['b' => 'c', 'd' => 'e'];
+$dataWriter = new RawSelectableWriter($data);
+
+// Setting up patch.
+$patchData = [
+    (object) ['op' => 'add', 'path' => '/a/f', 'value' => 'g'],
+];
+$patchReader = new RawSelectableReader($patchData);
+
+// Applying the patch.
+(new Patch($dataWriter))->apply($patchReader); // $data->a->f property is added and set to 'g'
