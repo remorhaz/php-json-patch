@@ -46,9 +46,9 @@ To apply JSON Patch to the JSON document you need just 4 simple steps:
 ```php
 <?php
 
-use \Remorhaz\JSON\Data\Reference\Selector;
-use \Remorhaz\JSON\Data\Reference\Writer;
-use \Remorhaz\JSON\Patch\Patch;
+use Remorhaz\JSON\Data\Reference\Selector;
+use Remorhaz\JSON\Data\Reference\Writer;
+use Remorhaz\JSON\Patch\Patch;
 
 // Setting up document.
 $data = (object) ['a' => (object) ['b' => 'c', 'd' => 'e']];
