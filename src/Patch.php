@@ -2,6 +2,7 @@
 
 namespace Remorhaz\JSON\Patch;
 
+use Remorhaz\JSON\Data\Exception as DataException;
 use Remorhaz\JSON\Data\SelectorInterface;
 use Remorhaz\JSON\Pointer\Pointer;
 
@@ -70,8 +71,11 @@ class Patch
             case 'test':
                 $expectedValueReader = $this->getPatchPointer()->read("/{$index}/value");
                 $actualValueReader = $this->getDataPointer()->read($path);
-                if ($expectedValueReader->getAsStruct() !== $actualValueReader->getAsStruct()) {
-                    throw new \RuntimeException("Test operation failed");
+                try {
+                    // TODO: Make reader's test() method boolean and refactor pointer's test().
+                    $expectedValueReader->test($actualValueReader);
+                } catch (DataException $e) {
+                    throw new \RuntimeException("Test operation failed", 0, $e);
                 }
                 break;
 
