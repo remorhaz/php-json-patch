@@ -51,7 +51,7 @@ use \Remorhaz\JSON\Data\Reference\Writer;
 use \Remorhaz\JSON\Patch\Patch;
 
 // Setting up document.
-$data = (object) ['a' => (object) ['b' => 'c', 'd' => 'e'];
+$data = (object) ['a' => (object) ['b' => 'c', 'd' => 'e']];
 $dataWriter = new Writer($data);
 
 // Setting up patch.
