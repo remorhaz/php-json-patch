@@ -30,8 +30,8 @@ composer require remorhaz/php-json-patch
 Patch tool utilizes JSON data accessor interfaces defined in package
 **[remorhaz/php-json-data](https://github.com/remorhaz/php-json-data)**. Read more about them in package documentation.
 There is a ready-to-work implementation in that package that works with native PHP structures (like the ones you get as
-a result of `json_decode` function). You can use `RawSelectableReader` class to bind to patch data and
-`RawSelectableWriter` class to bind to the document that is to be patched. You can also implement your own accessors
+a result of `json_decode` function). You can use `Remorhaz\JSON\Data\Reference\Selector` class to bind to patch data and
+`Remorhaz\JSON\Data\Reference\Writer` class to bind to the document that is to be patched. You can also implement your own accessors
 if you need to work with another sort of data (like unparsed JSON text, for example).
 
 ## Using patch tool
@@ -46,19 +46,19 @@ To apply JSON Patch to the JSON document you need just 4 simple steps:
 ```php
 <?php
 
-use \Remorhaz\JSON\Data\RawSelectableReader;
-use \Remorhaz\JSON\Data\RawSelectableWriter;
+use \Remorhaz\JSON\Data\Reference\Selector;
+use \Remorhaz\JSON\Data\Reference\Writer;
 use \Remorhaz\JSON\Patch\Patch;
 
 // Setting up document.
 $data = (object) ['a' => (object) ['b' => 'c', 'd' => 'e'];
-$dataWriter = new RawSelectableWriter($data);
+$dataWriter = new Writer($data);
 
 // Setting up patch.
 $patchData = [
     (object) ['op' => 'add', 'path' => '/a/f', 'value' => 'g'],
 ];
-$patchReader = new RawSelectableReader($patchData);
+$patchSelector = new Selector($patchData);
 
 // Applying the patch.
-(new Patch($dataWriter))->apply($patchReader); // $data->a->f property is added and set to 'g'
+(new Patch($dataWriter))->apply($patchSelector); // $data->a->f property is added and set to 'g'
