@@ -3,13 +3,16 @@
 namespace Remorhaz\JSON\Patch;
 
 use Remorhaz\JSON\Data\Exception as DataException;
+use Remorhaz\JSON\Data\ReaderInterface;
 use Remorhaz\JSON\Data\SelectorInterface;
 use Remorhaz\JSON\Pointer\Pointer;
 
 class Patch
 {
 
-    private $dataSelector;
+    private $inputSelector;
+
+    private $outputSelector;
 
     private $patchSelector;
 
@@ -17,12 +20,10 @@ class Patch
 
     private $patchPointer;
 
-
     public function __construct(SelectorInterface $dataSelector)
     {
-        $this->dataSelector = $dataSelector;
+        $this->setInputSelector($dataSelector);
     }
-
 
     public function apply(SelectorInterface $patchSelector)
     {
@@ -33,21 +34,49 @@ class Patch
         if (!$this->getPatchSelector()->isArray()) {
             throw new \RuntimeException("Patch must be an array");
         }
+        $this->setOutputSelector($this->getInputSelector());
         $operationCount = $this
             ->getPatchSelector()
             ->getElementCount();
         for ($operationIndex = 0; $operationIndex < $operationCount; $operationIndex++) {
             $this->performOperation($operationIndex);
         }
+        $this->setInputSelector($this->getOutputSelector());
         return $this;
     }
 
-
-    protected function getDataSelector(): SelectorInterface
+    public function getResult(): ReaderInterface
     {
-        return $this->dataSelector;
+        return $this->getOutputSelector();
     }
 
+    protected function setInputSelector(SelectorInterface $selector)
+    {
+        $this->inputSelector = $selector;
+        return $this;
+    }
+
+    protected function getInputSelector(): SelectorInterface
+    {
+        if (null === $this->inputSelector) {
+            throw new \LogicException("Input selector is empty");
+        }
+        return $this->inputSelector;
+    }
+
+    protected function setOutputSelector(SelectorInterface $selector)
+    {
+        $this->outputSelector = $selector;
+        return $this;
+    }
+
+    protected function getOutputSelector(): SelectorInterface
+    {
+        if (null === $this->outputSelector) {
+            throw new \LogicException("Output selector is empty");
+        }
+        return $this->outputSelector;
+    }
 
     protected function performOperation(int $index)
     {
@@ -129,7 +158,7 @@ class Patch
     protected function getDataPointer(): Pointer
     {
         if (null === $this->dataPointer) {
-            $this->dataPointer = new Pointer($this->getDataSelector());
+            $this->dataPointer = new Pointer($this->getInputSelector());
         }
         return $this->dataPointer;
     }
