@@ -2,11 +2,12 @@
 
 namespace Remorhaz\JSON\Test\Patch;
 
+use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Reference\Selector;
 use Remorhaz\JSON\Data\Reference\Writer;
 use Remorhaz\JSON\Patch\Patch;
 
-class PatchTest extends \PHPUnit_Framework_TestCase
+class PatchTest extends TestCase
 {
 
 

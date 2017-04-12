@@ -13,11 +13,11 @@
   ],
   "require": {
     "php": ">=7.0",
-    "remorhaz/php-json-data": "0.2.1",
-    "remorhaz/php-json-pointer": "0.3.1"
+    "remorhaz/php-json-data": "~0.3.0",
+    "remorhaz/php-json-pointer": "~0.4.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "@stable",
+    "phpunit/phpunit": "~6.1",
     "codeclimate/php-test-reporter": "dev-master"
   },
   "autoload": {
