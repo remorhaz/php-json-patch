@@ -8,24 +8,24 @@
 
 This library implements [RFC6902](https://tools.ietf.org/html/rfc6902)-compliant JSON patch tool.
 
-##Requirements
+## Requirements
 * PHP 7.0+
 
-##Features
+## Features
 * Supports PHP 7.0
 * No PHP extensions required
 * Throws SPL exceptions
 
-#License
+# License
 PHP JSON Patch is licensed under MIT license.
 
-#Installation
+# Installation
 You will need [composer](https://getcomposer.org) to perform install.
 ```
 composer require remorhaz/php-json-patch
 ```
 
-#Documentation
+# Documentation
 ## Data accessors
 Patch tool utilizes JSON data accessor interfaces defined in package
 **[remorhaz/php-json-data](https://github.com/remorhaz/php-json-data)**. Read more about them in package documentation.
@@ -42,7 +42,7 @@ To apply JSON Patch to the JSON document you need just 4 simple steps:
 3. Create an object of `\Remorhaz\JSON\Patch\Patch` by calling it's constructor with a document accessor as an argument.
 4. Call its `apply()` method with patch accessor as an argument.
 
-##Example of usage
+## Example of usage
 ```php
 <?php
 
