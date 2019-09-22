@@ -3,8 +3,8 @@
 [![Latest Stable Version](https://poser.pugx.org/remorhaz/php-json-patch/v/stable)](https://packagist.org/packages/remorhaz/php-json-patch)
 [![License](https://poser.pugx.org/remorhaz/php-json-patch/license)](https://packagist.org/packages/remorhaz/php-json-patch)
 [![Build Status](https://travis-ci.org/remorhaz/php-json-patch.svg?branch=master)](https://travis-ci.org/remorhaz/php-json-patch)
-[![Code Climate](https://codeclimate.com/github/remorhaz/php-json-patch/badges/gpa.svg)](https://codeclimate.com/github/remorhaz/php-json-patch)
-[![Test Coverage](https://codeclimate.com/github/remorhaz/php-json-patch/badges/coverage.svg)](https://codeclimate.com/github/remorhaz/php-json-patch/coverage)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/remorhaz/php-json-patch/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/remorhaz/php-json-patch/?branch=master)
+[![codecov](https://codecov.io/gh/remorhaz/php-json-patch/branch/master/graph/badge.svg)](https://codecov.io/gh/remorhaz/php-json-patch)
 
 This library implements [RFC6902](https://tools.ietf.org/html/rfc6902)-compliant JSON patch tool.
 
