@@ -2,164 +2,190 @@
 
 namespace Remorhaz\JSON\Patch;
 
-use Remorhaz\JSON\Data\Exception as DataException;
-use Remorhaz\JSON\Data\ReaderInterface;
-use Remorhaz\JSON\Data\SelectorInterface;
-use Remorhaz\JSON\Pointer\Pointer;
+use Remorhaz\JSON\Data\Value\ArrayValueInterface;
+use Remorhaz\JSON\Data\Value\DecodedJson\NodeValueFactory as DecodedJsonNodeValueFactory;
+use Remorhaz\JSON\Data\Value\NodeValueInterface;
+use Remorhaz\JSON\Pointer\Processor\Processor;
+use Remorhaz\JSON\Pointer\Processor\Result\ResultInterface;
+use Remorhaz\JSON\Pointer\Query\QueryFactory;
+use Remorhaz\JSON\Pointer\Query\QueryInterface;
+use RuntimeException;
+use function is_string;
 
 class Patch
 {
 
-    private $inputSelector;
+    private $queryFactory;
 
-    private $outputSelector;
+    private $queryProcessor;
 
-    private $patchSelector;
+    private $decodedJsonNodeValueFactory;
 
-    private $dataPointer;
+    private $outputData;
 
-    private $patchPointer;
-
-    public function __construct(SelectorInterface $dataSelector)
+    public function __construct(NodeValueInterface $inputData)
     {
-        $this->setInputSelector($dataSelector);
+        $this->outputData = $inputData;
+        $this->queryFactory = QueryFactory::create();
+        $this->queryProcessor = Processor::create();
+        $this->decodedJsonNodeValueFactory = DecodedJsonNodeValueFactory::create();
     }
 
-    public function apply(SelectorInterface $patchSelector)
+    public function apply(NodeValueInterface $patch)
     {
-        $this
-            ->setPatchSelector($patchSelector)
-            ->getPatchSelector()
-            ->selectRoot();
-        if (!$this->getPatchSelector()->isArray()) {
-            throw new \RuntimeException("Patch must be an array");
+        if (!$patch instanceof ArrayValueInterface) {
+            throw new RuntimeException("Patch must be an array");
         }
-        $this->setOutputSelector($this->getInputSelector());
-        $operationCount = $this
-            ->getPatchSelector()
-            ->getElementCount();
-        for ($operationIndex = 0; $operationIndex < $operationCount; $operationIndex++) {
-            $this->performOperation($operationIndex);
+        foreach ($patch->createChildIterator() as $element) {
+            $this->performOperation($element);
         }
-        $this->setInputSelector($this->getOutputSelector());
+
         return $this;
     }
 
-    public function getResult(): ReaderInterface
+    protected function performOperation(NodeValueInterface $element)
     {
-        return $this->getOutputSelector();
-    }
-
-    protected function setInputSelector(SelectorInterface $selector)
-    {
-        $this->inputSelector = $selector;
-        return $this;
-    }
-
-    protected function getInputSelector(): SelectorInterface
-    {
-        if (null === $this->inputSelector) {
-            throw new \LogicException("Input selector is empty");
+        $operation = $this
+            ->queryProcessor
+            ->select($this->queryFactory->createQuery('/op'), $element)
+            ->decode();
+        if (!is_string($operation)) {
+            throw new RuntimeException("Invalid patch operation");
         }
-        return $this->inputSelector;
-    }
-
-    protected function setOutputSelector(SelectorInterface $selector)
-    {
-        $this->outputSelector = $selector;
-        return $this;
-    }
-
-    protected function getOutputSelector(): SelectorInterface
-    {
-        if (null === $this->outputSelector) {
-            throw new \LogicException("Output selector is empty");
-        }
-        return $this->outputSelector;
-    }
-
-    protected function performOperation(int $index)
-    {
-        $operation = $this->getPatchPointer()->read("/{$index}/op")->getAsString();
-        $path = $this->getPatchPointer()->read("/{$index}/path")->getAsString();
+        $pathQuery = $this->getOperationPath($element);
         switch ($operation) {
             case 'add':
-                $valueReader = $this->getPatchPointer()->read("/{$index}/value");
-                $this->getDataPointer()->add($path, $valueReader);
+                $result = $this
+                    ->queryProcessor
+                    ->add(
+                        $pathQuery,
+                        $this->outputData,
+                        $this->getOperationValue($element)
+                    );
+                $this->outputData = $this->getResultValue($result);
                 break;
 
             case 'remove':
-                $this->getDataPointer()->remove($path);
+                $result = $this
+                    ->queryProcessor
+                    ->delete($pathQuery, $this->outputData);
+                $this->outputData = $this->getResultValue($result);
                 break;
 
             case 'replace':
-                $valueReader = $this->getPatchPointer()->read("/{$index}/value");
-                $this->getDataPointer()->replace($path, $valueReader);
+                $result = $this
+                    ->queryProcessor
+                    ->replace(
+                        $pathQuery,
+                        $this->outputData,
+                        $this->getOperationValue($element)
+                    );
+                $this->outputData = $this->getResultValue($result);
                 break;
 
             case 'test':
-                $expectedValueReader = $this->getPatchPointer()->read("/{$index}/value");
-                $actualValueReader = $this->getDataPointer()->read($path);
-                try {
-                    // TODO: Make reader's test() method boolean and refactor pointer's test().
-                    $expectedValueReader->test($actualValueReader);
-                } catch (DataException $e) {
-                    throw new \RuntimeException("Test operation failed", 0, $e);
+                $result = $this
+                    ->queryProcessor
+                    ->select($pathQuery, $this->outputData);
+                if (!$result->exists()) {
+                    throw new RuntimeException("Test operation failed");
                 }
                 break;
 
             case 'copy':
-                $from = $this->getPatchPointer()->read("/{$index}/from")->getAsString();
-                $valueReader = $this->getDataPointer()->read($from);
-                $this->getDataPointer()->add($path, $valueReader);
+                $fromResult = $this
+                    ->queryProcessor
+                    ->select(
+                        $this->getOperationFrom($element),
+                        $this->outputData
+                    );
+                $result = $this
+                    ->queryProcessor
+                    ->add(
+                        $pathQuery,
+                        $this->outputData,
+                        $this->getResultValue($fromResult)
+                    );
+                $this->outputData = $this->getResultValue($result);
                 break;
 
             case 'move':
-                $from = $this->getPatchPointer()->read("/{$index}/from")->getAsString();
-                $valueReader = $this->getDataPointer()->read($from);
-                $this
-                    ->getDataPointer()
-                    ->remove($from)
-                    ->add($path, $valueReader);
+                $fromPathQuery = $this->getOperationFrom($element);
+                $fromResult = $this
+                    ->queryProcessor
+                    ->select($fromPathQuery, $this->outputData);
+                $removeResult = $this
+                    ->queryProcessor
+                    ->delete($fromPathQuery, $this->outputData);
+                $result = $this
+                    ->queryProcessor
+                    ->add(
+                        $pathQuery,
+                        $this->getResultValue($removeResult),
+                        $this->getResultValue($fromResult)
+                    );
+                $this->outputData = $this->getResultValue($result);
                 break;
 
             default:
-                throw new \RuntimeException("Unknown operation '{$operation}'");
+                throw new RuntimeException("Unknown operation '{$operation}'");
         }
+
         return $this;
     }
 
-
-    protected function setPatchSelector(SelectorInterface $patchReader)
+    private function getOperationPath(NodeValueInterface $operation): QueryInterface
     {
-        $this->patchSelector = $patchReader;
-        return $this;
+        $path = $this
+            ->queryProcessor
+            ->select($this->queryFactory->createQuery('/path'), $operation)
+            ->decode();
+        if (!is_string($path)) {
+            throw new RuntimeException("Invalid operation path");
+        }
+
+        return $this
+            ->queryFactory
+            ->createQuery($path);
     }
 
-
-    protected function getPatchSelector(): SelectorInterface
+    private function getOperationFrom(NodeValueInterface $operation): QueryInterface
     {
-        if (null === $this->patchSelector) {
-            throw new \LogicException("Patch reader is not set");
+        $path = $this
+            ->queryProcessor
+            ->select($this->queryFactory->createQuery('/from'), $operation)
+            ->decode();
+        if (!is_string($path)) {
+            throw new RuntimeException("Invalid operation from");
         }
-        return $this->patchSelector;
+
+        return $this
+            ->queryFactory
+            ->createQuery($path);
     }
 
-
-    protected function getPatchPointer(): Pointer
+    private function getOperationValue(NodeValueInterface $operation): NodeValueInterface
     {
-        if (null === $this->patchPointer) {
-            $this->patchPointer = new Pointer($this->getPatchSelector());
+        $result = $this
+            ->queryProcessor
+            ->select($this->queryFactory->createQuery('/value'), $operation);
+
+        if (!$result->exists()) {
+            throw new RuntimeException("Patch result not found");
         }
-        return $this->patchPointer;
+
+        return $this->getResultValue($result);
     }
 
-
-    protected function getDataPointer(): Pointer
+    private function getResultValue(ResultInterface $result): NodeValueInterface
     {
-        if (null === $this->dataPointer) {
-            $this->dataPointer = new Pointer($this->getInputSelector());
-        }
-        return $this->dataPointer;
+        return $this
+            ->decodedJsonNodeValueFactory
+            ->createValue($result->decode());
+    }
+
+    public function getOutputData(): NodeValueInterface
+    {
+        return $this->outputData;
     }
 }

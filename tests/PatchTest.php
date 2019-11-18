@@ -3,8 +3,9 @@
 namespace Remorhaz\JSON\Test\Patch;
 
 use PHPUnit\Framework\TestCase;
-use Remorhaz\JSON\Data\Reference\Selector;
-use Remorhaz\JSON\Data\Reference\Writer;
+use Remorhaz\JSON\Data\Export\ValueDecoder;
+use Remorhaz\JSON\Data\Export\ValueEncoder;
+use Remorhaz\JSON\Data\Value\DecodedJson\NodeValueFactory as DecodedNodeValueFactory;
 use Remorhaz\JSON\Patch\Patch;
 
 class PatchTest extends TestCase
@@ -17,12 +18,15 @@ class PatchTest extends TestCase
      * @param mixed $expectedData
      * @dataProvider providerValidSpecPatch_Result
      */
-    public function testApply_ValidSpecPatch_Applied($data, array $patchData, $expectedData)
+    public function testApply_ValidSpecPatch_Applied($data, array $patchData, $expectedData): void
     {
-        $dataWriter = new Writer($data);
-        $patchDataSelector = new Selector($patchData);
-        (new Patch($dataWriter))->apply($patchDataSelector);
-        $this->assertEquals($expectedData, $data);
+        $decodedNodeValueFactory = DecodedNodeValueFactory::create();
+        $dataValue = $decodedNodeValueFactory->createValue($data);
+        $patchDataValue = $decodedNodeValueFactory->createValue($patchData);
+        $patch = new Patch($dataValue);
+        $patch->apply($patchDataValue);
+        $actualData = (new ValueDecoder)->exportValue($patch->getOutputData());
+        $this->assertEquals($expectedData, $actualData);
     }
 
 
@@ -54,7 +58,7 @@ class PatchTest extends TestCase
      * @dataProvider providerInvalidPatch
      * @expectedException \RuntimeException
      */
-    public function testApply_InvalidSpecPatch_ExceptionThrown($data, array $patchData)
+    public function testApply_InvalidSpecPatch_ExceptionThrown($data, array $patchData): void
     {
         $dataWriter = new Writer($data);
         $patchDataSelector = new Selector($patchData);
@@ -88,7 +92,7 @@ class PatchTest extends TestCase
      * @param mixed $expectedData
      * @dataProvider providerValidPatch_Result
      */
-    public function testApply_ValidPatch_Applied($data, array $patchData, $expectedData)
+    public function testApply_ValidPatch_Applied($data, array $patchData, $expectedData): void
     {
         $dataWriter = new Writer($data);
         $patchDataSelector = new Selector($patchData);
@@ -124,7 +128,7 @@ class PatchTest extends TestCase
      * @dataProvider providerInvalidPatch
      * @expectedException \RuntimeException
      */
-    public function testApply_InvalidPatch_ExceptionThrown($data, array $patchData)
+    public function testApply_InvalidPatch_ExceptionThrown($data, array $patchData): void
     {
         $dataWriter = new Writer($data);
         $patchDataSelector = new Selector($patchData);

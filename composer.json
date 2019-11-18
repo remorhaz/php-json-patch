@@ -12,12 +12,13 @@
     }
   ],
   "require": {
-    "php": "^7.1",
-    "remorhaz/php-json-data": "^0.4.2",
-    "remorhaz/php-json-pointer": "^0.5.1"
+    "php": "^7.3",
+    "remorhaz/php-json-data": "^0.5.2",
+    "remorhaz/php-json-pointer": "^0.6.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0.1"
+    "phpunit/phpunit": "^8.4.3",
+    "infection/infection": "^0.14.2"
   },
   "autoload": {
     "psr-4": {
