@@ -9,15 +9,8 @@
 This library implements [RFC6902](https://tools.ietf.org/html/rfc6902)-compliant JSON patch tool.
 
 ## Requirements
-* PHP 7.1+
-
-## Features
-* Supports PHP 7.1
-* No PHP extensions required
-* Throws SPL exceptions
-
-# License
-PHP JSON Patch is licensed under MIT license.
+- PHP 7.3+
+- [Internationalization functions](https://www.php.net/manual/en/book.intl.php) (ext-intl) - required by [`remorhaz/php-json-data`](https://github.com/remorhaz/php-json-data) to compare Unicode strings.
 
 # Installation
 You will need [composer](https://getcomposer.org) to perform install.
@@ -48,7 +41,7 @@ To apply JSON Patch to the JSON document you need just 4 simple steps:
 
 use Remorhaz\JSON\Data\Reference\Selector;
 use Remorhaz\JSON\Data\Reference\Writer;
-use Remorhaz\JSON\Patch\Patch;
+use Remorhaz\JSON\Patch\Processor\Processor;
 
 // Setting up document.
 $data = (object) ['a' => (object) ['b' => 'c', 'd' => 'e']];
@@ -61,4 +54,8 @@ $patchData = [
 $patchSelector = new Selector($patchData);
 
 // Applying the patch.
-(new Patch($dataWriter))->apply($patchSelector); // $data->a->f property is added and set to 'g'
+(new Processor($dataWriter))->apply($patchSelector); // $data->a->f property is added and set to 'g'
+```
+
+# License
+PHP JSON Patch is licensed under MIT license.

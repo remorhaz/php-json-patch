@@ -4,31 +4,38 @@ namespace Remorhaz\JSON\Test\Patch;
 
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Export\ValueDecoder;
-use Remorhaz\JSON\Data\Export\ValueEncoder;
-use Remorhaz\JSON\Data\Value\DecodedJson\NodeValueFactory as DecodedNodeValueFactory;
-use Remorhaz\JSON\Patch\Patch;
+use Remorhaz\JSON\Data\Value\DecodedJson\NodeValueFactory as DecodedJsonNodeValueFactory;
+use Remorhaz\JSON\Data\Value\EncodedJson\NodeValueFactory as EncodedJsonNodeValueFactory;
+use Remorhaz\JSON\Patch\Processor\Exception\ExceptionInterface as ProcessorExceptionInterface;
+use Remorhaz\JSON\Patch\Processor\Exception\PatchNotAppliedException;
+use Remorhaz\JSON\Patch\Processor\Processor;
+use Remorhaz\JSON\Patch\Query\QueryFactory;
+use stdClass;
 
-class PatchTest extends TestCase
+/**
+ * @coversNothing
+ */
+class AcceptanceTest extends TestCase
 {
-
 
     /**
      * @param mixed $data
      * @param array $patchData
      * @param mixed $expectedData
      * @dataProvider providerValidSpecPatch_Result
+     * @throws ProcessorExceptionInterface
      */
     public function testApply_ValidSpecPatch_Applied($data, array $patchData, $expectedData): void
     {
-        $decodedNodeValueFactory = DecodedNodeValueFactory::create();
+        $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
         $dataValue = $decodedNodeValueFactory->createValue($data);
         $patchDataValue = $decodedNodeValueFactory->createValue($patchData);
-        $patch = new Patch($dataValue);
-        $patch->apply($patchDataValue);
-        $actualData = (new ValueDecoder)->exportValue($patch->getOutputData());
+        $query = QueryFactory::create()->createQuery($patchDataValue);
+        $actualData = Processor::create()
+            ->apply($query, $dataValue)
+            ->decode();
         $this->assertEquals($expectedData, $actualData);
     }
-
 
     public function providerValidSpecPatch_Result(): array
     {
@@ -48,23 +55,27 @@ class PatchTest extends TestCase
                 $dataSetList[] = $dataSet;
             }
         }
+
         return $dataSetList;
     }
-
 
     /**
      * @param mixed $data
      * @param array $patchData
      * @dataProvider providerInvalidPatch
-     * @expectedException \RuntimeException
+     * @throws ProcessorExceptionInterface
      */
     public function testApply_InvalidSpecPatch_ExceptionThrown($data, array $patchData): void
     {
-        $dataWriter = new Writer($data);
-        $patchDataSelector = new Selector($patchData);
-        (new Patch($dataWriter))->apply($patchDataSelector);
+        $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
+        $dataValue = $decodedNodeValueFactory->createValue($data);
+        $patchDataValue = $decodedNodeValueFactory->createValue($patchData);
+        $queryFactory = QueryFactory::create();
+        $query = $queryFactory->createQuery($patchDataValue);
+        $patch = Processor::create();
+        $this->expectException(PatchNotAppliedException::class);
+        $patch->apply($query, $dataValue);
     }
-
 
     public function providerInvalidSpecPatch(): array
     {
@@ -83,6 +94,7 @@ class PatchTest extends TestCase
                 $dataSetList[] = $dataSet;
             }
         }
+
         return $dataSetList;
     }
 
@@ -91,15 +103,20 @@ class PatchTest extends TestCase
      * @param array $patchData
      * @param mixed $expectedData
      * @dataProvider providerValidPatch_Result
+     * @throws ProcessorExceptionInterface
      */
     public function testApply_ValidPatch_Applied($data, array $patchData, $expectedData): void
     {
-        $dataWriter = new Writer($data);
-        $patchDataSelector = new Selector($patchData);
-        (new Patch($dataWriter))->apply($patchDataSelector);
-        $this->assertEquals($expectedData, $data);
+        $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
+        $dataValue = $decodedNodeValueFactory->createValue($data);
+        $patchDataValue = $decodedNodeValueFactory->createValue($patchData);
+        $queryFactory = QueryFactory::create();
+        $query = $queryFactory->createQuery($patchDataValue);
+        $actualData = Processor::create()
+            ->apply($query, $dataValue)
+            ->decode();
+        $this->assertEquals($expectedData, $actualData);
     }
-
 
     public function providerValidPatch_Result(): array
     {
@@ -119,6 +136,7 @@ class PatchTest extends TestCase
                 $dataSetList[] = $dataSet;
             }
         }
+
         return $dataSetList;
     }
 
@@ -126,15 +144,19 @@ class PatchTest extends TestCase
      * @param mixed $data
      * @param array $patchData
      * @dataProvider providerInvalidPatch
-     * @expectedException \RuntimeException
+     * @throws ProcessorExceptionInterface
      */
     public function testApply_InvalidPatch_ExceptionThrown($data, array $patchData): void
     {
-        $dataWriter = new Writer($data);
-        $patchDataSelector = new Selector($patchData);
-        (new Patch($dataWriter))->apply($patchDataSelector);
+        $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
+        $dataValue = $decodedNodeValueFactory->createValue($data);
+        $patchDataValue = $decodedNodeValueFactory->createValue($patchData);
+        $queryFactory = QueryFactory::create();
+        $query = $queryFactory->createQuery($patchDataValue);
+        $patch = Processor::create();
+        $this->expectException(PatchNotAppliedException::class);
+        $patch->apply($query, $dataValue);
     }
-
 
     public function providerInvalidPatch(): array
     {
@@ -150,34 +172,36 @@ class PatchTest extends TestCase
             if (isset($testInfo->comment)) {
                 $dataSetList[$testInfo->comment] = $dataSet;
             } else {
-                $dataSetList[] = $dataSet;
+                $dataSetList[$testInfo->error] = $dataSet;
             }
         }
+
         return $dataSetList;
     }
-
 
     private function getSpecTests(): array
     {
         $testsFile = realpath(__DIR__ . "/data/spec_tests.json");
+
         return $this->getTestInfoList($testsFile);
     }
-
 
     private function getTests(): array
     {
         $testsFile = realpath(__DIR__ . "/data/tests.json");
+
         return $this->getTestInfoList($testsFile);
     }
-
 
     private function getTestInfoList($fileName): array
     {
         $testInfoListJSON = file_get_contents($fileName);
-        $testInfoList = json_decode($testInfoListJSON);
-        $isNotDisabledTest = function(\stdClass $testInfo) {
+        $testInfoListValue = EncodedJsonNodeValueFactory::create()->createValue($testInfoListJSON);
+        $testInfoList = (new ValueDecoder)->exportValue($testInfoListValue);
+        $isNotDisabledTest = function (stdClass $testInfo) {
             return !(isset($testInfo->disabled) && $testInfo->disabled);
         };
+
         return array_filter($testInfoList, $isNotDisabledTest);
     }
 }
