@@ -35,7 +35,6 @@ final class TestOperation implements OperationInterface
     public function apply(NodeValueInterface $input, PointerProcessorInterface $pointerProcessor): NodeValueInterface
     {
         $selectResult = $pointerProcessor->select($this->pathPointer, $input);
-
         if ($this->matches($selectResult)) {
             return $input;
         }
@@ -45,12 +44,10 @@ final class TestOperation implements OperationInterface
 
     private function matches(PointerResultInterface $selectResult): bool
     {
-        if (!$selectResult->exists()) {
-            return false;
-        }
-
-        return $this
-            ->equalComparator
-            ->compare($selectResult->get(), $this->value);
+        return $selectResult->exists()
+            ? $this
+                ->equalComparator
+                ->compare($selectResult->get(), $this->value)
+            : false;
     }
 }
