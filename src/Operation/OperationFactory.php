@@ -25,6 +25,10 @@ final class OperationFactory implements OperationFactoryInterface
 
     private const OPERATION_MOVE = 'move';
 
+    private const POINTER_PATH = 'path';
+
+    private const POINTER_FROM = 'from';
+
     private $pointerQueryFactory;
 
     private $pointerProcessor;
@@ -48,27 +52,27 @@ final class OperationFactory implements OperationFactoryInterface
             case self::OPERATION_ADD:
                 return new AddOperation(
                     $index,
-                    $this->extractPathPointer($jsonValue, $index),
+                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
                     $this->extractValue($jsonValue, $index)
                 );
 
             case self::OPERATION_REMOVE:
                 return new RemoveOperation(
                     $index,
-                    $this->extractPathPointer($jsonValue, $index)
+                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index)
                 );
 
             case self::OPERATION_REPLACE:
                 return new ReplaceOperation(
                     $index,
-                    $this->extractPathPointer($jsonValue, $index),
+                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
                     $this->extractValue($jsonValue, $index)
                 );
 
             case self::OPERATION_TEST:
                 return new TestOperation(
                     $index,
-                    $this->extractPathPointer($jsonValue, $index),
+                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
                     $this->extractValue($jsonValue, $index),
                     $this->equalComparator
                 );
@@ -76,15 +80,15 @@ final class OperationFactory implements OperationFactoryInterface
             case self::OPERATION_COPY:
                 return new CopyOperation(
                     $index,
-                    $this->extractPathPointer($jsonValue, $index),
-                    $this->extractFromPointer($jsonValue, $index)
+                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                    $this->extractPathPointer($jsonValue, self::POINTER_FROM, $index)
                 );
 
             case self::OPERATION_MOVE:
                 return new MoveOperation(
                     $index,
-                    $this->extractPathPointer($jsonValue, $index),
-                    $this->extractFromPointer($jsonValue, $index)
+                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                    $this->extractPathPointer($jsonValue, self::POINTER_FROM, $index)
                 );
         }
 
@@ -107,35 +111,17 @@ final class OperationFactory implements OperationFactoryInterface
         throw new Exception\InvalidOperationCodeException($operationCode, $index);
     }
 
-    private function extractPathPointer(NodeValueInterface $operation, int $index): QueryInterface
+    private function extractPathPointer(NodeValueInterface $operation, string $property, int $index): QueryInterface
     {
         $result = $this
             ->pointerProcessor
-            ->select($this->pointerQueryFactory->createQuery('/path'), $operation);
+            ->select($this->pointerQueryFactory->createQuery("/{$property}"), $operation);
         if (!$result->exists()) {
-            throw new Exception\PathNotFoundException($index, 'path');
+            throw new Exception\PathNotFoundException($index, $property);
         }
         $path = $result->decode();
         if (!is_string($path)) {
-            throw new Exception\InvalidPathException($index, 'path', $path);
-        }
-
-        return $this
-            ->pointerQueryFactory
-            ->createQuery($path);
-    }
-
-    private function extractFromPointer(NodeValueInterface $operation, int $index): QueryInterface
-    {
-        $result = $this
-            ->pointerProcessor
-            ->select($this->pointerQueryFactory->createQuery('/from'), $operation);
-        if (!$result->exists()) {
-            throw new Exception\PathNotFoundException($index, 'from');
-        }
-        $path = $result->decode();
-        if (!is_string($path)) {
-            throw new Exception\InvalidPathException($index, 'from', $path);
+            throw new Exception\InvalidPathException($index, $property, $path);
         }
 
         return $this
