@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Query;
 
+use Iterator;
 use Remorhaz\JSON\Data\Export\ValueDecoderInterface;
 use Remorhaz\JSON\Data\Export\ValueEncoderInterface;
 use Remorhaz\JSON\Data\Value\ArrayValueInterface;
@@ -55,10 +56,7 @@ final class LazyQuery implements QueryInterface
     {
         $operations = [];
         try {
-            if (!$this->patch instanceof ArrayValueInterface) {
-                throw new Exception\InvalidPatchException($this->patch);
-            }
-            foreach ($this->patch->createChildIterator() as $index => $operationData) {
+            foreach ($this->createOperationDataIterator($this->patch) as $index => $operationData) {
                 $operations[] = $this
                     ->operationFactory
                     ->fromJson($operationData, $index);
@@ -68,5 +66,14 @@ final class LazyQuery implements QueryInterface
         }
 
         return new Query($this->encoder, $this->decoder, ...$operations);
+    }
+
+    private function createOperationDataIterator(NodeValueInterface $patch): Iterator
+    {
+        if ($patch instanceof ArrayValueInterface) {
+            return $patch->createChildIterator();
+        }
+
+        throw new Exception\InvalidPatchException($patch);
     }
 }
