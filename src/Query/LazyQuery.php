@@ -55,14 +55,14 @@ final class LazyQuery implements QueryInterface
     private function loadQuery(): QueryInterface
     {
         $operations = [];
-        try {
-            foreach ($this->createOperationDataIterator($this->patch) as $index => $operationData) {
+        foreach ($this->createOperationDataIterator($this->patch) as $index => $operationData) {
+            try {
                 $operations[] = $this
                     ->operationFactory
                     ->fromJson($operationData, $index);
+            } catch (Throwable $e) {
+                throw new Exception\OperationNotLoadedException($index, $this->patch, $e);
             }
-        } catch (Throwable $e) {
-            throw new Exception\PatchNotLoadedException($this->patch, $e);
         }
 
         return new Query($this->encoder, $this->decoder, ...$operations);
