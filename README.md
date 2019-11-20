@@ -39,7 +39,7 @@ $decodedJson = (object) ['a' => 1];
 $document2 = $decodedValueFactory->createValue($decodedJson);
 ```
 
-## Creating and processing query
+### Creating and processing query
 You should use _query factory_ to create query from JSON Patch document. Then you should use _processor_ to apply that query:
 ```php
 <?php
