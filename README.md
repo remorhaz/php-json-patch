@@ -15,13 +15,13 @@ This library implements [RFC6902](https://tools.ietf.org/html/rfc6902)-compliant
 - [JSON extension](https://www.php.net/manual/en/book.json.php) (ext-json) - required by [remorhaz/php-json-data](https://github.com/remorhaz/php-json-data) to access JSON documents.
 - [Internationalization functions](https://www.php.net/manual/en/book.intl.php) (ext-intl) - required by [`remorhaz/php-json-data`](https://github.com/remorhaz/php-json-data) to compare Unicode strings.
 
-# Installation
+## Installation
 You will need [composer](https://getcomposer.org) to perform install.
 ```
 composer require remorhaz/php-json-patch
 ```
 
-# Documentation
+## Documentation
 ### Accessing JSON document
 You can create accessible JSON document either from encoded JSON string or from decoded JSON data using corresponding _node value factory_:
 ```php
@@ -62,5 +62,5 @@ var_dump($result->decode()); // array: [2]
 ```
 Note that result can be exported either to JSON-encoded string or to raw PHP value.
 
-# License
+## License
 PHP JSON Patch is licensed under [MIT license](./LICENSE).
