@@ -4,8 +4,8 @@ matrix:
   include:
     - php: '7.3'
       env: XDEBUG=YES
-    - php: '7.4snapshot'
-      env: XDEBUG=NO
+    - php: '7.4'
+      env: XDEBUG=YES
 
 install:
   - mkdir -p ./build/logs
@@ -14,7 +14,7 @@ install:
 
 script:
   - vendor/bin/phpcs -sp --report-junit=build/logs/phpcs.xml
-  - if [ "$XDEBUG" == "YES" ]; then vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --coverage-xml=build/logs/coverage-xml --log-junit=build/logs/phpunit.junit.xml; else vendor/bin/phpunit; fi
+  - if [ "$XDEBUG" == "YES" ]; then vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --coverage-xml=build/logs/coverage-xml --log-junit=build/logs/junit.xml; else vendor/bin/phpunit; fi
   - if [ "$XDEBUG" == "YES" ]; then vendor/bin/infection --coverage=build/logs --threads=4  --no-progress; fi
 
 after_success:
