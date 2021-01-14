@@ -8,10 +8,17 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-  php-7.4:
+  php7.4:
     build:
       context: .
       dockerfile: php-7.4.Dockerfile
+    volumes:
+      - .:/app
+    working_dir: /app
+  php8.0:
+    build:
+      context: .
+      dockerfile: php-8.0.Dockerfile
     volumes:
       - .:/app
     working_dir: /app
