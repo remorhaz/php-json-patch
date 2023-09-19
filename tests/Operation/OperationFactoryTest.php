@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation;
@@ -32,13 +33,12 @@ use Remorhaz\JSON\Pointer\Query\QueryFactory as PointerQueryFactory;
  */
 class OperationFactoryTest extends TestCase
 {
-
     public function testFromJson_NoOpProperty_ThrowsException(): void
     {
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{}');
         $this->expectException(OperationCodeNotFoundException::class);
@@ -51,7 +51,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":1}');
         $this->expectException(InvalidOperationCodeException::class);
@@ -64,7 +64,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"a"}');
         $this->expectException(UnknownOperationCodeException::class);
@@ -77,11 +77,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"add","value":[]}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -90,11 +90,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"add","path":1,"value":[]}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -103,11 +103,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"add","path":"/0"}');
         $this->expectException(ValueNotFoundException::class);
-        $this->expectDeprecationMessage('Operation #1');
+        $this->expectExceptionMessage('Operation #1');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -116,7 +116,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"add","path":"/0","value":[]}');
         $operation = $factory->fromJson($jsonValue, 1);
@@ -128,11 +128,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"remove"}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -141,11 +141,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"remove","path":1}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -154,7 +154,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"remove","path":"/0"}');
         $operation = $factory->fromJson($jsonValue, 1);
@@ -166,11 +166,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"replace","value":[]}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -179,11 +179,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"replace","path":1,"value":[]}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -192,11 +192,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"replace","path":"/0"}');
         $this->expectException(ValueNotFoundException::class);
-        $this->expectDeprecationMessage('Operation #1');
+        $this->expectExceptionMessage('Operation #1');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -205,7 +205,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"replace","path":"/0","value":[]}');
         $operation = $factory->fromJson($jsonValue, 1);
@@ -217,11 +217,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"test","value":[]}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -230,11 +230,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"test","path":1,"value":[]}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -243,11 +243,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"test","path":"/0"}');
         $this->expectException(ValueNotFoundException::class);
-        $this->expectDeprecationMessage('Operation #1');
+        $this->expectExceptionMessage('Operation #1');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -256,7 +256,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"test","path":"/0","value":[]}');
         $operation = $factory->fromJson($jsonValue, 1);
@@ -269,14 +269,14 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $comparator
+            $comparator,
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"test","path":"/0","value":1}');
         $operation = $factory->fromJson($jsonValue, 1);
         $result = new ExistingResult(
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);
         $pointerProcessor
@@ -295,11 +295,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"copy","from":"/0"}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -308,11 +308,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"copy","path":1,"from":"/0"}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -321,11 +321,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"copy","path":"/0"}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'from\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'from\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -334,11 +334,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"copy","path":"/0","from":1}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'from\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'from\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -347,7 +347,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"copy","path":"/0","from":"/1"}');
         $operation = $factory->fromJson($jsonValue, 1);
@@ -359,11 +359,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"move","from":"/0"}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -372,11 +372,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"move","path":1,"from":"/0"}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'path\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'path\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -385,11 +385,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"move","path":"/0"}');
         $this->expectException(PathNotFoundException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'from\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'from\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -398,11 +398,11 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"move","path":"/0","from":1}');
         $this->expectException(InvalidPathException::class);
-        $this->expectDeprecationMessageMatches('/Operation #1:.*\'from\'/');
+        $this->expectExceptionMessageMatches('/Operation #1:.*\'from\'/');
         $factory->fromJson($jsonValue, 1);
     }
 
@@ -411,7 +411,7 @@ class OperationFactoryTest extends TestCase
         $factory = new OperationFactory(
             PointerQueryFactory::create(),
             PointerProcessor::create(),
-            $this->createMock(ComparatorInterface::class)
+            $this->createMock(ComparatorInterface::class),
         );
         $jsonValue = NodeValueFactory::create()->createValue('{"op":"move","path":"/0","from":"/1"}');
         $operation = $factory->fromJson($jsonValue, 1);

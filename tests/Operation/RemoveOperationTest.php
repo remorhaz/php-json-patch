@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation;
@@ -15,7 +16,6 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
  */
 class RemoveOperationTest extends TestCase
 {
-
     public function testApply_Constructed_PassesInputToGivenPointerProcessor(): void
     {
         $pathPointer = $this->createMock(PointerQueryInterface::class);
@@ -28,7 +28,7 @@ class RemoveOperationTest extends TestCase
             ->method('delete')
             ->with(
                 self::identicalTo($pathPointer),
-                self::identicalTo($input)
+                self::identicalTo($input),
             );
         $operation->apply($input, $pointerProcessor);
     }
@@ -37,7 +37,7 @@ class RemoveOperationTest extends TestCase
     {
         $operation = new RemoveOperation(
             0,
-            $this->createMock(PointerQueryInterface::class)
+            $this->createMock(PointerQueryInterface::class),
         );
 
         $input = $this->createMock(NodeValueInterface::class);

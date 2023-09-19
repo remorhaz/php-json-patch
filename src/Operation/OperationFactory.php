@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation;
@@ -8,11 +9,11 @@ use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterface;
 use Remorhaz\JSON\Pointer\Query\QueryFactoryInterface as PointerQueryFactoryInterface;
 use Remorhaz\JSON\Pointer\Query\QueryInterface;
+
 use function is_string;
 
 final class OperationFactory implements OperationFactoryInterface
 {
-
     private const OPERATION_ADD = 'add';
 
     private const OPERATION_REMOVE = 'remove';
@@ -29,70 +30,50 @@ final class OperationFactory implements OperationFactoryInterface
 
     private const POINTER_FROM = 'from';
 
-    private $pointerQueryFactory;
-
-    private $pointerProcessor;
-
-    private $equalComparator;
-
     public function __construct(
-        PointerQueryFactoryInterface $pointerQueryFactory,
-        PointerProcessorInterface $pointerProcessor,
-        ComparatorInterface $equalComparator
+        private PointerQueryFactoryInterface $pointerQueryFactory,
+        private PointerProcessorInterface $pointerProcessor,
+        private ComparatorInterface $equalComparator,
     ) {
-        $this->pointerQueryFactory = $pointerQueryFactory;
-        $this->pointerProcessor = $pointerProcessor;
-        $this->equalComparator = $equalComparator;
     }
 
     public function fromJson(NodeValueInterface $jsonValue, int $index): OperationInterface
     {
         $operationCode = $this->getOperationCode($jsonValue, $index);
-        switch ($operationCode) {
-            case self::OPERATION_ADD:
-                return new AddOperation(
-                    $index,
-                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
-                    $this->extractValue($jsonValue, $index)
-                );
 
-            case self::OPERATION_REMOVE:
-                return new RemoveOperation(
-                    $index,
-                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index)
-                );
-
-            case self::OPERATION_REPLACE:
-                return new ReplaceOperation(
-                    $index,
-                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
-                    $this->extractValue($jsonValue, $index)
-                );
-
-            case self::OPERATION_TEST:
-                return new TestOperation(
-                    $index,
-                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
-                    $this->extractValue($jsonValue, $index),
-                    $this->equalComparator
-                );
-
-            case self::OPERATION_COPY:
-                return new CopyOperation(
-                    $index,
-                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
-                    $this->extractPathPointer($jsonValue, self::POINTER_FROM, $index)
-                );
-
-            case self::OPERATION_MOVE:
-                return new MoveOperation(
-                    $index,
-                    $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
-                    $this->extractPathPointer($jsonValue, self::POINTER_FROM, $index)
-                );
-        }
-
-        throw new Exception\UnknownOperationCodeException($index, $operationCode);
+        return match ($operationCode) {
+            self::OPERATION_ADD => new AddOperation(
+                $index,
+                $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                $this->extractValue($jsonValue, $index),
+            ),
+            self::OPERATION_REMOVE => new RemoveOperation(
+                $index,
+                $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+            ),
+            self::OPERATION_REPLACE => new ReplaceOperation(
+                $index,
+                $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                $this->extractValue($jsonValue, $index),
+            ),
+            self::OPERATION_TEST => new TestOperation(
+                $index,
+                $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                $this->extractValue($jsonValue, $index),
+                $this->equalComparator,
+            ),
+            self::OPERATION_COPY => new CopyOperation(
+                $index,
+                $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                $this->extractPathPointer($jsonValue, self::POINTER_FROM, $index),
+            ),
+            self::OPERATION_MOVE => new MoveOperation(
+                $index,
+                $this->extractPathPointer($jsonValue, self::POINTER_PATH, $index),
+                $this->extractPathPointer($jsonValue, self::POINTER_FROM, $index),
+            ),
+            default => throw new Exception\UnknownOperationCodeException($index, $operationCode),
+        };
     }
 
     private function getOperationCode(NodeValueInterface $jsonValue, int $index): string
@@ -104,11 +85,10 @@ final class OperationFactory implements OperationFactoryInterface
             throw new Exception\OperationCodeNotFoundException($index);
         }
         $operationCode = $result->decode();
-        if (is_string($operationCode)) {
-            return $operationCode;
-        }
 
-        throw new Exception\InvalidOperationCodeException($operationCode, $index);
+        return is_string($operationCode)
+            ? $operationCode
+            : throw new Exception\InvalidOperationCodeException($operationCode, $index);
     }
 
     private function extractPathPointer(NodeValueInterface $operation, string $property, int $index): QueryInterface
@@ -116,17 +96,15 @@ final class OperationFactory implements OperationFactoryInterface
         $result = $this
             ->pointerProcessor
             ->select($this->pointerQueryFactory->createQuery("/{$property}"), $operation);
-        if (!$result->exists()) {
-            throw new Exception\PathNotFoundException($index, $property);
-        }
-        $path = $result->decode();
-        if (!is_string($path)) {
-            throw new Exception\InvalidPathException($index, $property, $path);
-        }
+        $path = $result->exists()
+            ? $result->decode()
+            : throw new Exception\PathNotFoundException($index, $property);
 
-        return $this
-            ->pointerQueryFactory
-            ->createQuery($path);
+        return is_string($path)
+            ? $this
+                ->pointerQueryFactory
+                ->createQuery($path)
+            : throw new Exception\InvalidPathException($index, $property, $path);
     }
 
     private function extractValue(NodeValueInterface $operation, int $index): NodeValueInterface
@@ -135,10 +113,8 @@ final class OperationFactory implements OperationFactoryInterface
             ->pointerProcessor
             ->select($this->pointerQueryFactory->createQuery('/value'), $operation);
 
-        if ($result->exists()) {
-            return $result->get();
-        }
-
-        throw new Exception\ValueNotFoundException($index);
+        return $result->exists()
+            ? $result->get()
+            : throw new Exception\ValueNotFoundException($index);
     }
 }

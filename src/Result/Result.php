@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Result;
@@ -9,21 +10,11 @@ use Remorhaz\JSON\Data\Value\NodeValueInterface;
 
 final class Result implements ResultInterface
 {
-
-    private $value;
-
-    private $encoder;
-
-    private $decoder;
-
     public function __construct(
-        NodeValueInterface $value,
-        ValueEncoderInterface $encoder,
-        ValueDecoderInterface $decoder
+        private NodeValueInterface $value,
+        private ValueEncoderInterface $encoder,
+        private ValueDecoderInterface $decoder,
     ) {
-        $this->value = $value;
-        $this->encoder = $encoder;
-        $this->decoder = $decoder;
     }
 
     public function encode(): string
@@ -33,7 +24,7 @@ final class Result implements ResultInterface
             ->exportValue($this->value);
     }
 
-    public function decode()
+    public function decode(): mixed
     {
         return $this
             ->decoder

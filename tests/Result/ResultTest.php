@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Result;
@@ -14,14 +15,13 @@ use Remorhaz\JSON\Patch\Result\Result;
  */
 class ResultTest extends TestCase
 {
-
     public function testGet_ConstructedWithValue_ReturnsSameValue(): void
     {
         $value = $this->createMock(NodeValueInterface::class);
         $result = new Result(
             $value,
             $this->createMock(ValueEncoderInterface::class),
-            $this->createMock(ValueDecoderInterface::class)
+            $this->createMock(ValueDecoderInterface::class),
         );
         self::assertSame($value, $result->get());
     }
@@ -33,7 +33,7 @@ class ResultTest extends TestCase
         $result = new Result(
             $value,
             $encoder,
-            $this->createMock(ValueDecoderInterface::class)
+            $this->createMock(ValueDecoderInterface::class),
         );
         $encoder
             ->expects(self::once())
@@ -49,7 +49,7 @@ class ResultTest extends TestCase
         $result = new Result(
             $value,
             $encoder,
-            $this->createMock(ValueDecoderInterface::class)
+            $this->createMock(ValueDecoderInterface::class),
         );
         $encoder
             ->method('exportValue')
@@ -64,7 +64,7 @@ class ResultTest extends TestCase
         $result = new Result(
             $value,
             $this->createMock(ValueEncoderInterface::class),
-            $decoder
+            $decoder,
         );
         $decoder
             ->expects(self::once())
@@ -80,7 +80,7 @@ class ResultTest extends TestCase
         $result = new Result(
             $value,
             $this->createMock(ValueEncoderInterface::class),
-            $decoder
+            $decoder,
         );
         $decoder
             ->method('exportValue')

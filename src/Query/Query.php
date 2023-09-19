@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Query;
@@ -13,7 +14,6 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
 
 final class Query implements QueryInterface
 {
-
     private $encoder;
 
     private $decoder;

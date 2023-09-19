@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Query;
@@ -10,11 +11,7 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
 
 interface QueryInterface
 {
-
     /**
-     * @param NodeValueInterface        $data
-     * @param PointerProcessorInterface $pointerProcessor
-     * @return ResultInterface
      * @throws PatchExceptionInterface
      */
     public function __invoke(NodeValueInterface $data, PointerProcessorInterface $pointerProcessor): ResultInterface;

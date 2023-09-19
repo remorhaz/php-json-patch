@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation;
@@ -9,17 +10,10 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
 
 final class RemoveOperation implements OperationInterface
 {
-
-    private $index;
-
-    private $pathPointer;
-
     public function __construct(
-        int $index,
-        PointerQueryInterface $pathPointer
+        private int $index,
+        private PointerQueryInterface $pathPointer,
     ) {
-        $this->index = $index;
-        $this->pathPointer = $pathPointer;
     }
 
     public function apply(NodeValueInterface $input, PointerProcessorInterface $pointerProcessor): NodeValueInterface

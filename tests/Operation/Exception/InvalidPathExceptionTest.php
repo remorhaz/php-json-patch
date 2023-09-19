@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
@@ -12,7 +13,6 @@ use Remorhaz\JSON\Patch\Operation\Exception\InvalidPathException;
  */
 class InvalidPathExceptionTest extends TestCase
 {
-
     public function testGetIndex_ConstructedWithIndex_ReturnsSameValue(): void
     {
         $exception = new InvalidPathException(1, 'a', 2);
@@ -45,7 +45,7 @@ class InvalidPathExceptionTest extends TestCase
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new InvalidPathException(1, 'a', 2, $previous);
         self::assertSame($previous, $exception->getPrevious());
     }

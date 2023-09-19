@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
@@ -12,13 +13,12 @@ use Remorhaz\JSON\Patch\Operation\Exception\PathNotFoundException;
  */
 class PathNotFoundExceptionTest extends TestCase
 {
-
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
     {
         $exception = new PathNotFoundException(1, 'a');
         self::assertSame(
             'Operation #1: JSON Pointer not found in \'a\' property',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 
@@ -48,7 +48,7 @@ class PathNotFoundExceptionTest extends TestCase
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new PathNotFoundException(1, 'a', $previous);
         self::assertSame($previous, $exception->getPrevious());
     }

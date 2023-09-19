@@ -11,17 +11,14 @@ use Throwable;
 
 class Processor implements ProcessorInterface
 {
-
-    private $pointerProcessor;
-
     public static function create(): ProcessorInterface
     {
         return new self(PointerProcessor::create());
     }
 
-    public function __construct(PointerProcessorInterface $pointerProcessor)
-    {
-        $this->pointerProcessor = $pointerProcessor;
+    public function __construct(
+        private PointerProcessorInterface $pointerProcessor,
+    ) {
     }
 
     public function apply(QueryInterface $query, NodeValueInterface $data): ResultInterface

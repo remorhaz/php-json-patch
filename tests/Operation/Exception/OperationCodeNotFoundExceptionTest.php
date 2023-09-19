@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
@@ -12,13 +13,12 @@ use Remorhaz\JSON\Patch\Operation\Exception\OperationCodeNotFoundException;
  */
 class OperationCodeNotFoundExceptionTest extends TestCase
 {
-
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
     {
         $exception = new OperationCodeNotFoundException(1);
         self::assertSame(
             'Operation #1: operation code not found in property \'op\'',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 
@@ -42,7 +42,7 @@ class OperationCodeNotFoundExceptionTest extends TestCase
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new OperationCodeNotFoundException(1, $previous);
         self::assertSame($previous, $exception->getPrevious());
     }

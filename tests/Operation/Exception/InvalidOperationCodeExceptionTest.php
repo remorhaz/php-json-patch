@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
@@ -12,13 +13,12 @@ use Remorhaz\JSON\Patch\Operation\Exception\InvalidOperationCodeException;
  */
 class InvalidOperationCodeExceptionTest extends TestCase
 {
-
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
     {
         $exception = new InvalidOperationCodeException(1, 2);
         self::assertSame(
             'Operation #1: operation code in \'op\' property must be a string',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 
@@ -48,7 +48,7 @@ class InvalidOperationCodeExceptionTest extends TestCase
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new InvalidOperationCodeException(1, 2, $previous);
         self::assertSame($previous, $exception->getPrevious());
     }

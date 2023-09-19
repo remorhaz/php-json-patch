@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation;
@@ -15,7 +16,6 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
  */
 class ReplaceOperationTest extends TestCase
 {
-
     public function testApply_Constructed_PassesInputToGivenPointerProcessor(): void
     {
         $pathPointer = $this->createMock(PointerQueryInterface::class);
@@ -30,7 +30,7 @@ class ReplaceOperationTest extends TestCase
             ->with(
                 self::identicalTo($pathPointer),
                 self::identicalTo($input),
-                self::identicalTo($value)
+                self::identicalTo($value),
             );
         $operation->apply($input, $pointerProcessor);
     }
@@ -40,7 +40,7 @@ class ReplaceOperationTest extends TestCase
         $operation = new ReplaceOperation(
             0,
             $this->createMock(PointerQueryInterface::class),
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
 
         $input = $this->createMock(NodeValueInterface::class);

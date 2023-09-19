@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation;
@@ -9,21 +10,11 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
 
 final class CopyOperation implements OperationInterface
 {
-
-    private $index;
-
-    private $pathPointer;
-
-    private $fromPointer;
-
     public function __construct(
-        int $index,
-        PointerQueryInterface $pathPointer,
-        PointerQueryInterface $fromPointer
+        private int $index,
+        private PointerQueryInterface $pathPointer,
+        private PointerQueryInterface $fromPointer,
     ) {
-        $this->index = $index;
-        $this->pathPointer = $pathPointer;
-        $this->fromPointer = $fromPointer;
     }
 
     public function apply(NodeValueInterface $input, PointerProcessorInterface $pointerProcessor): NodeValueInterface

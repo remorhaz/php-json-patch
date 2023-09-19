@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Query;
@@ -17,7 +18,6 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
  */
 class QueryTest extends TestCase
 {
-
     /**
      * @throws PatchExceptionInterface
      */
@@ -26,11 +26,11 @@ class QueryTest extends TestCase
         $encoder = $this->createMock(ValueEncoderInterface::class);
         $query = new Query(
             $encoder,
-            $this->createMock(ValueDecoderInterface::class)
+            $this->createMock(ValueDecoderInterface::class),
         );
         $result = $query(
             $this->createMock(NodeValueInterface::class),
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         $encoder
             ->expects(self::once())
@@ -46,11 +46,11 @@ class QueryTest extends TestCase
         $decoder = $this->createMock(ValueDecoderInterface::class);
         $query = new Query(
             $this->createMock(ValueEncoderInterface::class),
-            $decoder
+            $decoder,
         );
         $result = $query(
             $this->createMock(NodeValueInterface::class),
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         $decoder
             ->expects(self::once())
@@ -65,12 +65,12 @@ class QueryTest extends TestCase
     {
         $query = new Query(
             $this->createMock(ValueEncoderInterface::class),
-            $this->createMock(ValueDecoderInterface::class)
+            $this->createMock(ValueDecoderInterface::class),
         );
         $input = $this->createMock(NodeValueInterface::class);
         $result = $query(
             $input,
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         self::assertSame($input, $result->get());
     }
@@ -84,7 +84,7 @@ class QueryTest extends TestCase
         $query = new Query(
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
-            $operation
+            $operation,
         );
         $input = $this->createMock(NodeValueInterface::class);
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);
@@ -105,7 +105,7 @@ class QueryTest extends TestCase
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
             $operation,
-            $this->createMock(OperationInterface::class)
+            $this->createMock(OperationInterface::class),
         );
         $input = $this->createMock(NodeValueInterface::class);
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);
@@ -127,7 +127,7 @@ class QueryTest extends TestCase
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
             $firstOperation,
-            $secondOperation
+            $secondOperation,
         );
         $firstOperationResult = $this->createMock(NodeValueInterface::class);
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);
@@ -150,7 +150,7 @@ class QueryTest extends TestCase
         $query = new Query(
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
-            $operation
+            $operation,
         );
         $output = $this->createMock(NodeValueInterface::class);
         $operation
@@ -158,7 +158,7 @@ class QueryTest extends TestCase
             ->willReturn($output);
         $result = $query(
             $this->createMock(NodeValueInterface::class),
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         self::assertSame($output, $result->get());
     }
@@ -173,7 +173,7 @@ class QueryTest extends TestCase
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
             $this->createMock(OperationInterface::class),
-            $operation
+            $operation,
         );
         $output = $this->createMock(NodeValueInterface::class);
         $operation
@@ -181,7 +181,7 @@ class QueryTest extends TestCase
             ->willReturn($output);
         $result = $query(
             $this->createMock(NodeValueInterface::class),
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         self::assertSame($output, $result->get());
     }

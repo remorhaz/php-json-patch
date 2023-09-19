@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Query\Exception;
@@ -13,12 +14,11 @@ use Remorhaz\JSON\Patch\Query\Exception\OperationNotLoadedException;
  */
 class OperationNotLoadedExceptionTest extends TestCase
 {
-
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
     {
         $exception = new OperationNotLoadedException(
             1,
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertSame('Failed to load operation #1 from patch', $exception->getMessage());
     }
@@ -27,7 +27,7 @@ class OperationNotLoadedExceptionTest extends TestCase
     {
         $exception = new OperationNotLoadedException(
             1,
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertSame(1, $exception->getIndex());
     }
@@ -43,7 +43,7 @@ class OperationNotLoadedExceptionTest extends TestCase
     {
         $exception = new OperationNotLoadedException(
             1,
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertSame(0, $exception->getCode());
     }
@@ -52,18 +52,18 @@ class OperationNotLoadedExceptionTest extends TestCase
     {
         $exception = new OperationNotLoadedException(
             1,
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertNull($exception->getPrevious());
     }
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new OperationNotLoadedException(
             1,
             $this->createMock(NodeValueInterface::class),
-            $previous
+            $previous,
         );
         self::assertSame($previous, $exception->getPrevious());
     }

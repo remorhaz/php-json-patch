@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Query;
@@ -19,13 +20,12 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
  */
 class QueryFactoryTest extends TestCase
 {
-
     public function testCreate_Always_ReturnsQueryFactoryInstance(): void
     {
         self::assertInstanceOf(QueryFactory::class, QueryFactory::create());
     }
 
-    public function testCreateQuery_Constructed_ReturnsLazyQueryInstaqnce(): void
+    public function testCreateQuery_Constructed_ReturnsLazyQueryInstance(): void
     {
         $factory = QueryFactory::create();
         $patch = $this->createMock(NodeValueInterface::class);
@@ -63,14 +63,14 @@ class QueryFactoryTest extends TestCase
         $factory = new QueryFactory(
             $this->createMock(OperationFactoryInterface::class),
             $encoder,
-            $this->createMock(ValueDecoderInterface::class)
+            $this->createMock(ValueDecoderInterface::class),
         );
 
         $patch = NodeValueFactory::create()->createValue('[{"op":"remove","path":"/0"}]');
         $query = $factory->createQuery($patch);
         $result = $query(
             $this->createMock(NodeValueInterface::class),
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         $encoder
             ->expects(self::once())
@@ -87,14 +87,14 @@ class QueryFactoryTest extends TestCase
         $factory = new QueryFactory(
             $this->createMock(OperationFactoryInterface::class),
             $this->createMock(ValueEncoderInterface::class),
-            $decoder
+            $decoder,
         );
 
         $patch = NodeValueFactory::create()->createValue('[{"op":"remove","path":"/0"}]');
         $query = $factory->createQuery($patch);
         $result = $query(
             $this->createMock(NodeValueInterface::class),
-            $this->createMock(PointerProcessorInterface::class)
+            $this->createMock(PointerProcessorInterface::class),
         );
         $decoder
             ->expects(self::once())

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation\Exception;
@@ -8,19 +9,15 @@ use UnexpectedValueException;
 
 final class InvalidOperationCodeException extends UnexpectedValueException implements ExceptionInterface
 {
-
-    private $index;
-
-    private $operationCode;
-
-    public function __construct(int $index, $operationCode, Throwable $previous = null)
-    {
-        $this->index = $index;
-        $this->operationCode = $operationCode;
+    public function __construct(
+        private int $index,
+        private mixed $operationCode,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct(
-            "Operation #{$this->index}: operation code in 'op' property must be a string",
+            "Operation #$this->index: operation code in 'op' property must be a string",
             0,
-            $previous
+            $previous,
         );
     }
 
@@ -29,7 +26,7 @@ final class InvalidOperationCodeException extends UnexpectedValueException imple
         return $this->index;
     }
 
-    public function getOperationCode()
+    public function getOperationCode(): mixed
     {
         return $this->operationCode;
     }

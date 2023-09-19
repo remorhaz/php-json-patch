@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Query\Exception;
@@ -13,11 +14,10 @@ use Remorhaz\JSON\Patch\Query\Exception\InvalidPatchException;
  */
 class InvalidPatchExceptionTest extends TestCase
 {
-
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
     {
         $exception = new InvalidPatchException(
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertSame('Patch must be an array', $exception->getMessage());
     }
@@ -32,7 +32,7 @@ class InvalidPatchExceptionTest extends TestCase
     public function testGetCode_Always_ReturnsZero(): void
     {
         $exception = new InvalidPatchException(
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertSame(0, $exception->getCode());
     }
@@ -40,17 +40,17 @@ class InvalidPatchExceptionTest extends TestCase
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void
     {
         $exception = new InvalidPatchException(
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         self::assertNull($exception->getPrevious());
     }
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new InvalidPatchException(
             $this->createMock(NodeValueInterface::class),
-            $previous
+            $previous,
         );
         self::assertSame($previous, $exception->getPrevious());
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Query;
@@ -20,14 +21,10 @@ use Remorhaz\JSON\Patch\Query\LazyQuery;
 use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterface;
 
 /**
- * Class LazyQueryTest
- *
- * @package Remorhaz\JSON\Patch\Query
  * @covers  \Remorhaz\JSON\Patch\Query\LazyQuery
  */
 class LazyQueryTest extends TestCase
 {
-
     /**
      * @throws PatchExceptionInterface
      */
@@ -37,7 +34,7 @@ class LazyQueryTest extends TestCase
             $this->createMock(OperationFactoryInterface::class),
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
-            $this->createMock(NodeValueInterface::class)
+            $this->createMock(NodeValueInterface::class),
         );
         $input = $this->createMock(NodeValueInterface::class);
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);
@@ -56,21 +53,21 @@ class LazyQueryTest extends TestCase
             [
                 (object) [],
             ],
-            new Path,
-            NodeValueFactory::create()
+            new Path(),
+            NodeValueFactory::create(),
         );
         $query = new LazyQuery(
             $operationFactory,
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
-            $patch
+            $patch,
         );
         $input = $this->createMock(NodeValueInterface::class);
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);
 
         $operationFactory
             ->method('fromJson')
-            ->willThrowException(new Exception);
+            ->willThrowException(new Exception());
         $this->expectException(OperationNotLoadedException::class);
         $query($input, $pointerProcessor);
     }
@@ -86,14 +83,14 @@ class LazyQueryTest extends TestCase
                 (object) [],
                 (object) [],
             ],
-            new Path,
-            NodeValueFactory::create()
+            new Path(),
+            NodeValueFactory::create(),
         );
         $query = new LazyQuery(
             $operationFactory,
             $this->createMock(ValueEncoderInterface::class),
             $this->createMock(ValueDecoderInterface::class),
-            $patch
+            $patch,
         );
         $input = $this->createMock(NodeValueInterface::class);
         $pointerProcessor = $this->createMock(PointerProcessorInterface::class);

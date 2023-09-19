@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Query;
@@ -17,36 +18,26 @@ use Remorhaz\JSON\Pointer\Query\QueryFactory as PointerQueryFactory;
 
 final class QueryFactory implements QueryFactoryInterface
 {
-
-    private $operationFactory;
-
-    private $encoder;
-
-    private $decoder;
-
     public static function create(): QueryFactoryInterface
     {
-        $decoder = new ValueDecoder;
+        $decoder = new ValueDecoder();
 
         return new self(
             new OperationFactory(
                 PointerQueryFactory::create(),
                 PointerProcessor::create(),
-                new EqualValueComparator(new Collator('UTF-8'))
+                new EqualValueComparator(new Collator('UTF-8')),
             ),
             new ValueEncoder($decoder),
-            $decoder
+            $decoder,
         );
     }
 
     public function __construct(
-        OperationFactoryInterface $operationFactory,
-        ValueEncoderInterface $encoder,
-        ValueDecoderInterface $decoder
+        private OperationFactoryInterface $operationFactory,
+        private ValueEncoderInterface $encoder,
+        private ValueDecoderInterface $decoder,
     ) {
-        $this->operationFactory = $operationFactory;
-        $this->encoder = $encoder;
-        $this->decoder = $decoder;
     }
 
     public function createQuery(NodeValueInterface $patch): QueryInterface

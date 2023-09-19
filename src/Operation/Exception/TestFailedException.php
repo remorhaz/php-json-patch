@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation\Exception;
@@ -9,30 +10,17 @@ use Throwable;
 
 final class TestFailedException extends RuntimeException implements ExceptionInterface
 {
-
-    private $index;
-
-    private $document;
-
-    private $path;
-
-    private $expectedValue;
-
     public function __construct(
-        int $index,
-        NodeValueInterface $document,
-        string $path,
-        NodeValueInterface $expectedValue,
-        Throwable $previous = null
+        private int $index,
+        private NodeValueInterface $document,
+        private string $path,
+        private NodeValueInterface $expectedValue,
+        ?Throwable $previous = null,
     ) {
-        $this->index = $index;
-        $this->document = $document;
-        $this->path = $path;
-        $this->expectedValue = $expectedValue;
         parent::__construct(
-            "Operation #{$this->index}: test operation failed at '{$path}'",
+            "Operation #$this->index: test operation failed at '$path'",
             0,
-            $previous
+            $previous,
         );
     }
 

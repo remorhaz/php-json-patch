@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Query\Exception;
@@ -9,12 +10,10 @@ use UnexpectedValueException;
 
 final class InvalidPatchException extends UnexpectedValueException implements ExceptionInterface
 {
-
-    private $patch;
-
-    public function __construct(NodeValueInterface $patch, Throwable $previous = null)
-    {
-        $this->patch = $patch;
+    public function __construct(
+        private NodeValueInterface $patch,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct("Patch must be an array", 0, $previous);
     }
 

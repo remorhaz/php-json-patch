@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Processor;
@@ -18,7 +19,6 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
  */
 class ProcessorTest extends TestCase
 {
-
     public function testCreate_Always_ReturnsProcessorInstance(): void
     {
         self::assertInstanceOf(Processor::class, Processor::create());
@@ -32,7 +32,7 @@ class ProcessorTest extends TestCase
         $query = $this->createMock(QueryInterface::class);
         $query
             ->method('__invoke')
-            ->willThrowException(new Exception);
+            ->willThrowException(new Exception());
         $processor = Processor::create();
         $data = $this->createMock(NodeValueInterface::class);
         $this->expectException(PatchNotAppliedException::class);

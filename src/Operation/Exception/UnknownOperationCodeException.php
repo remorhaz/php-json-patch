@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation\Exception;
@@ -8,19 +9,15 @@ use Throwable;
 
 final class UnknownOperationCodeException extends RangeException implements ExceptionInterface
 {
-
-    private $index;
-
-    private $operationCode;
-
-    public function __construct(int $index, string $operationCode, Throwable $previous = null)
-    {
-        $this->index = $index;
-        $this->operationCode = $operationCode;
+    public function __construct(
+        private int $index,
+        private string $operationCode,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct(
-            "Operation #{$this->index}: unknown operation code '{$this->operationCode}'",
+            "Operation #$this->index: unknown operation code '$this->operationCode'",
             0,
-            $previous
+            $previous,
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation\Exception;
@@ -8,16 +9,14 @@ use Throwable;
 
 final class OperationCodeNotFoundException extends RuntimeException implements ExceptionInterface
 {
-
-    private $index;
-
-    public function __construct(int $index, Throwable $previous = null)
-    {
-        $this->index = $index;
+    public function __construct(
+        private int $index,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct(
-            "Operation #{$this->index}: operation code not found in property 'op'",
+            "Operation #$this->index: operation code not found in property 'op'",
             0,
-            $previous
+            $previous,
         );
     }
 

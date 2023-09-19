@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation\Exception;
@@ -8,19 +9,15 @@ use Throwable;
 
 final class PathNotFoundException extends RuntimeException implements ExceptionInterface
 {
-
-    private $index;
-
-    private $property;
-
-    public function __construct(int $index, string $property, Throwable $previous = null)
-    {
-        $this->index = $index;
-        $this->property = $property;
+    public function __construct(
+        private int $index,
+        private string $property,
+        ?Throwable $previous = null,
+    ) {
         parent::__construct(
-            "Operation #{$this->index}: JSON Pointer not found in '{$this->property}' property",
+            "Operation #$this->index: JSON Pointer not found in '$this->property' property",
             0,
-            $previous
+            $previous,
         );
     }
 

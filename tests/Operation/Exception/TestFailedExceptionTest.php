@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
@@ -13,7 +14,6 @@ use Remorhaz\JSON\Patch\Operation\Exception\TestFailedException;
  */
 class TestFailedExceptionTest extends TestCase
 {
-
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
     {
         $exception = new TestFailedException(
@@ -95,13 +95,13 @@ class TestFailedExceptionTest extends TestCase
 
     public function testGetPrevious_ConstructedWithPrevious_ReturnsSameInstance(): void
     {
-        $previous = new Exception;
+        $previous = new Exception();
         $exception = new TestFailedException(
             1,
             $this->createMock(NodeValueInterface::class),
             'a',
             $this->createMock(NodeValueInterface::class),
-            $previous
+            $previous,
         );
         self::assertSame($previous, $exception->getPrevious());
     }

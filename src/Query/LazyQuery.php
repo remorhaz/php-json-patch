@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Query;
@@ -15,27 +16,14 @@ use Throwable;
 
 final class LazyQuery implements QueryInterface
 {
-
-    private $operationFactory;
-
-    private $encoder;
-
-    private $decoder;
-
-    private $patch;
-
-    private $loadedQuery;
+    private ?QueryInterface $loadedQuery = null;
 
     public function __construct(
-        OperationFactoryInterface $operationFactory,
-        ValueEncoderInterface $encoder,
-        ValueDecoderInterface $decoder,
-        NodeValueInterface $patch
+        private OperationFactoryInterface $operationFactory,
+        private ValueEncoderInterface $encoder,
+        private ValueDecoderInterface $decoder,
+        private NodeValueInterface $patch,
     ) {
-        $this->operationFactory = $operationFactory;
-        $this->encoder = $encoder;
-        $this->decoder = $decoder;
-        $this->patch = $patch;
     }
 
     public function __invoke(NodeValueInterface $data, PointerProcessorInterface $pointerProcessor): ResultInterface
@@ -45,11 +33,7 @@ final class LazyQuery implements QueryInterface
 
     private function getLoadedQuery(): QueryInterface
     {
-        if (!isset($this->loadedQuery)) {
-            $this->loadedQuery = $this->loadQuery();
-        }
-
-        return $this->loadedQuery;
+        return $this->loadedQuery ??= $this->loadQuery();
     }
 
     private function loadQuery(): QueryInterface
@@ -70,10 +54,8 @@ final class LazyQuery implements QueryInterface
 
     private function createOperationDataIterator(NodeValueInterface $patch): Iterator
     {
-        if ($patch instanceof ArrayValueInterface) {
-            return $patch->createChildIterator();
-        }
-
-        throw new Exception\InvalidPatchException($patch);
+        return $patch instanceof ArrayValueInterface
+            ? $patch->createChildIterator()
+            : throw new Exception\InvalidPatchException($patch);
     }
 }

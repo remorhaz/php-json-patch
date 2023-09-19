@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Operation;
@@ -8,6 +9,5 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
 
 interface OperationInterface
 {
-
     public function apply(NodeValueInterface $input, PointerProcessorInterface $pointerProcessor): NodeValueInterface;
 }
