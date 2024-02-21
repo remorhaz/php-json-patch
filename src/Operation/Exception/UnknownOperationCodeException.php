@@ -10,14 +10,13 @@ use Throwable;
 final class UnknownOperationCodeException extends RangeException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
-        private string $operationCode,
+        private readonly int $index,
+        private readonly string $operationCode,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: unknown operation code '$this->operationCode'",
-            0,
-            $previous,
+            message: "Operation #$this->index: unknown operation code '$this->operationCode'",
+            previous: $previous,
         );
     }
 

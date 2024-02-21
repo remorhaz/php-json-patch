@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Patch\Operation\Exception\ValueNotFoundException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\Exception\ValueNotFoundException
- */
+#[CoversClass(ValueNotFoundException::class)]
 class ValueNotFoundExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void

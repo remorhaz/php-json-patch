@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Result;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Export\ValueDecoderInterface;
 use Remorhaz\JSON\Data\Export\ValueEncoderInterface;
 use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Patch\Result\Result;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Result\Result
- */
+#[CoversClass(Result::class)]
 class ResultTest extends TestCase
 {
     public function testGet_ConstructedWithValue_ReturnsSameValue(): void

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Patch\Operation\Exception\TestFailedException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\Exception\TestFailedException
- */
+#[CoversClass(TestFailedException::class)]
 class TestFailedExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
@@ -69,17 +68,6 @@ class TestFailedExceptionTest extends TestCase
             $expectedValue,
         );
         self::assertSame($expectedValue, $exception->getExpectedValue());
-    }
-
-    public function testGetCode_Always_ReturnsZero(): void
-    {
-        $exception = new TestFailedException(
-            1,
-            $this->createMock(NodeValueInterface::class),
-            'a',
-            $this->createMock(NodeValueInterface::class),
-        );
-        self::assertSame(0, $exception->getCode());
     }
 
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void

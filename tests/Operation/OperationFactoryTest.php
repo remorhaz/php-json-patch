@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Comparator\ComparatorInterface;
 use Remorhaz\JSON\Data\Export\ValueDecoderInterface;
@@ -28,9 +29,7 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
 use Remorhaz\JSON\Pointer\Processor\Result\ExistingResult;
 use Remorhaz\JSON\Pointer\Query\QueryFactory as PointerQueryFactory;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\OperationFactory
- */
+#[CoversClass(OperationFactory::class)]
 class OperationFactoryTest extends TestCase
 {
     public function testFromJson_NoOpProperty_ThrowsException(): void

@@ -17,7 +17,7 @@ class Processor implements ProcessorInterface
     }
 
     public function __construct(
-        private PointerProcessorInterface $pointerProcessor,
+        private readonly PointerProcessorInterface $pointerProcessor,
     ) {
     }
 

@@ -19,10 +19,10 @@ final class LazyQuery implements QueryInterface
     private ?QueryInterface $loadedQuery = null;
 
     public function __construct(
-        private OperationFactoryInterface $operationFactory,
-        private ValueEncoderInterface $encoder,
-        private ValueDecoderInterface $decoder,
-        private NodeValueInterface $patch,
+        private readonly OperationFactoryInterface $operationFactory,
+        private readonly ValueEncoderInterface $encoder,
+        private readonly ValueDecoderInterface $decoder,
+        private readonly NodeValueInterface $patch,
     ) {
     }
 

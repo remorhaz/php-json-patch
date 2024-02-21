@@ -11,11 +11,11 @@ use Throwable;
 final class OperationNotLoadedException extends RuntimeException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
-        private NodeValueInterface $patch,
+        private readonly int $index,
+        private readonly NodeValueInterface $patch,
         ?Throwable $previous = null,
     ) {
-        parent::__construct("Failed to load operation #$this->index from patch", 0, $previous);
+        parent::__construct("Failed to load operation #$this->index from patch", previous: $previous);
     }
 
     public function getIndex(): int

@@ -31,9 +31,9 @@ final class OperationFactory implements OperationFactoryInterface
     private const POINTER_FROM = 'from';
 
     public function __construct(
-        private PointerQueryFactoryInterface $pointerQueryFactory,
-        private PointerProcessorInterface $pointerProcessor,
-        private ComparatorInterface $equalComparator,
+        private readonly PointerQueryFactoryInterface $pointerQueryFactory,
+        private readonly PointerProcessorInterface $pointerProcessor,
+        private readonly ComparatorInterface $equalComparator,
     ) {
     }
 
@@ -81,10 +81,9 @@ final class OperationFactory implements OperationFactoryInterface
         $result = $this
             ->pointerProcessor
             ->select($this->pointerQueryFactory->createQuery('/op'), $jsonValue);
-        if (!$result->exists()) {
-            throw new Exception\OperationCodeNotFoundException($index);
-        }
-        $operationCode = $result->decode();
+        $operationCode = $result->exists()
+            ? $result->decode()
+            : throw new Exception\OperationCodeNotFoundException($index);
 
         return is_string($operationCode)
             ? $operationCode

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Query;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Export\ValueDecoderInterface;
 use Remorhaz\JSON\Data\Export\ValueEncoderInterface;
@@ -15,9 +16,7 @@ use Remorhaz\JSON\Patch\Query\LazyQuery;
 use Remorhaz\JSON\Patch\Query\QueryFactory;
 use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterface;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Query\QueryFactory
- */
+#[CoversClass(QueryFactory::class)]
 class QueryFactoryTest extends TestCase
 {
     public function testCreate_Always_ReturnsQueryFactoryInstance(): void

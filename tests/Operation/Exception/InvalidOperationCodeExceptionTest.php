@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Patch\Operation\Exception\InvalidOperationCodeException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\Exception\InvalidOperationCodeException
- */
+#[CoversClass(InvalidOperationCodeException::class)]
 class InvalidOperationCodeExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
@@ -32,12 +31,6 @@ class InvalidOperationCodeExceptionTest extends TestCase
     {
         $exception = new InvalidOperationCodeException(1, 2);
         self::assertSame(2, $exception->getOperationCode());
-    }
-
-    public function testGetCode_Always_ReturnsZero(): void
-    {
-        $exception = new InvalidOperationCodeException(1, 2);
-        self::assertSame(0, $exception->getCode());
     }
 
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void

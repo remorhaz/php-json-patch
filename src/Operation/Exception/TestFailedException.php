@@ -11,16 +11,15 @@ use Throwable;
 final class TestFailedException extends RuntimeException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
-        private NodeValueInterface $document,
-        private string $path,
-        private NodeValueInterface $expectedValue,
+        private readonly int $index,
+        private readonly NodeValueInterface $document,
+        private readonly string $path,
+        private readonly NodeValueInterface $expectedValue,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: test operation failed at '$path'",
-            0,
-            $previous,
+            message: "Operation #$this->index: test operation failed at '$path'",
+            previous: $previous,
         );
     }
 

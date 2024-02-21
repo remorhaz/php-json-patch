@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Query\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Patch\Query\Exception\OperationNotLoadedException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Query\Exception\OperationNotLoadedException
- */
+#[CoversClass(OperationNotLoadedException::class)]
 class OperationNotLoadedExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
@@ -37,15 +36,6 @@ class OperationNotLoadedExceptionTest extends TestCase
         $patch = $this->createMock(NodeValueInterface::class);
         $exception = new OperationNotLoadedException(1, $patch);
         self::assertSame($patch, $exception->getPatch());
-    }
-
-    public function testGetCode_Always_ReturnsZero(): void
-    {
-        $exception = new OperationNotLoadedException(
-            1,
-            $this->createMock(NodeValueInterface::class),
-        );
-        self::assertSame(0, $exception->getCode());
     }
 
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void

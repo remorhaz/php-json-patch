@@ -10,14 +10,13 @@ use Throwable;
 final class PathNotFoundException extends RuntimeException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
-        private string $property,
+        private readonly int $index,
+        private readonly string $property,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: JSON Pointer not found in '$this->property' property",
-            0,
-            $previous,
+            message: "Operation #$this->index: JSON Pointer not found in '$this->property' property",
+            previous: $previous,
         );
     }
 

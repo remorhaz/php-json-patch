@@ -12,22 +12,21 @@ use Remorhaz\JSON\Patch\Result\Result;
 use Remorhaz\JSON\Patch\Result\ResultInterface;
 use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterface;
 
+use function array_values;
+
 final class Query implements QueryInterface
 {
-    private $encoder;
-
-    private $decoder;
-
-    private $operations;
+    /**
+     * @var list<OperationInterface>
+     */
+    private readonly array $operations;
 
     public function __construct(
-        ValueEncoderInterface $encoder,
-        ValueDecoderInterface $decoder,
-        OperationInterface ...$operations
+        private readonly ValueEncoderInterface $encoder,
+        private readonly ValueDecoderInterface $decoder,
+        OperationInterface ...$operations,
     ) {
-        $this->encoder = $encoder;
-        $this->decoder = $decoder;
-        $this->operations = $operations;
+        $this->operations = array_values($operations);
     }
 
     public function __invoke(NodeValueInterface $data, PointerProcessorInterface $pointerProcessor): ResultInterface

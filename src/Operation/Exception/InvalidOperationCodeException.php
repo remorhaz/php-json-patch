@@ -10,14 +10,13 @@ use UnexpectedValueException;
 final class InvalidOperationCodeException extends UnexpectedValueException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
-        private mixed $operationCode,
+        private readonly int $index,
+        private readonly mixed $operationCode,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: operation code in 'op' property must be a string",
-            0,
-            $previous,
+            message: "Operation #$this->index: operation code in 'op' property must be a string",
+            previous: $previous,
         );
     }
 

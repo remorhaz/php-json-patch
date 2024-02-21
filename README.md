@@ -4,14 +4,13 @@
 [![Build](https://github.com/remorhaz/php-json-patch/actions/workflows/build.yml/badge.svg)](https://github.com/remorhaz/php-json-patch/actions/workflows/build.yml)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/remorhaz/php-json-patch/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/remorhaz/php-json-patch/?branch=master)
 [![codecov](https://codecov.io/gh/remorhaz/php-json-patch/branch/master/graph/badge.svg)](https://codecov.io/gh/remorhaz/php-json-patch)
-[![Infection MSI](https://badge.stryker-mutator.io/github.com/remorhaz/php-json-patch/master)](https://infection.github.io)
-[![Total Downloads](https://poser.pugx.org/remorhaz/php-json-patch/downloads)](https://packagist.org/packages/remorhaz/php-json-patch)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fremorhaz%2Fphp-json-patch%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/remorhaz/php-json-patch/master)[![Total Downloads](https://poser.pugx.org/remorhaz/php-json-patch/downloads)](https://packagist.org/packages/remorhaz/php-json-patch)
 [![License](https://poser.pugx.org/remorhaz/php-json-patch/license)](https://packagist.org/packages/remorhaz/php-json-patch)
 
 This library implements [RFC6902](https://tools.ietf.org/html/rfc6902)-compliant JSON patch tool.
 
 ## Requirements
-- PHP 8.0+
+- PHP 8.1.
 - [JSON extension](https://www.php.net/manual/en/book.json.php) (ext-json) - required by [remorhaz/php-json-data](https://github.com/remorhaz/php-json-data) to access JSON documents.
 - [Internationalization functions](https://www.php.net/manual/en/book.intl.php) (ext-intl) - required by [`remorhaz/php-json-data`](https://github.com/remorhaz/php-json-data) to compare Unicode strings.
 

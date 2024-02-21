@@ -11,8 +11,8 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
 final class RemoveOperation implements OperationInterface
 {
     public function __construct(
-        private int $index,
-        private PointerQueryInterface $pathPointer,
+        private readonly int $index,
+        private readonly PointerQueryInterface $pathPointer,
     ) {
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Remorhaz\JSON\Patch\Test\Operation;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Patch\Operation\MoveOperation;
@@ -11,9 +12,7 @@ use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterf
 use Remorhaz\JSON\Pointer\Processor\Result\ResultInterface as PointerResultInterface;
 use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\MoveOperation
- */
+#[CoversClass(MoveOperation::class)]
 class MoveOperationTest extends TestCase
 {
     public function testApply_Constructed_PassesInputToPointerProcessorSelect(): void

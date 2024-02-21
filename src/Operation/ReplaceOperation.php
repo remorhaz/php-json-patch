@@ -11,9 +11,9 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
 final class ReplaceOperation implements OperationInterface
 {
     public function __construct(
-        private int $index,
-        private PointerQueryInterface $pathPointer,
-        private NodeValueInterface $value,
+        private readonly int $index,
+        private readonly PointerQueryInterface $pathPointer,
+        private readonly NodeValueInterface $value,
     ) {
     }
 

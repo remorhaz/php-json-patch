@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Query\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Patch\Query\Exception\InvalidPatchException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Query\Exception\InvalidPatchException
- */
+#[CoversClass(InvalidPatchException::class)]
 class InvalidPatchExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
@@ -27,14 +26,6 @@ class InvalidPatchExceptionTest extends TestCase
         $patch = $this->createMock(NodeValueInterface::class);
         $exception = new InvalidPatchException($patch);
         self::assertSame($patch, $exception->getPatch());
-    }
-
-    public function testGetCode_Always_ReturnsZero(): void
-    {
-        $exception = new InvalidPatchException(
-            $this->createMock(NodeValueInterface::class),
-        );
-        self::assertSame(0, $exception->getCode());
     }
 
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void

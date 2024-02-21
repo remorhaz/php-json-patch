@@ -2,6 +2,8 @@
 
 namespace Remorhaz\JSON\Patch\Test;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Export\ValueDecoder;
 use Remorhaz\JSON\Data\Value\DecodedJson\NodeValueFactory as DecodedJsonNodeValueFactory;
@@ -14,18 +16,16 @@ use Remorhaz\JSON\Patch\Query\QueryFactory;
 use function array_filter;
 use function array_values;
 
-/**
- * @coversNothing
- */
+#[CoversNothing]
 class AcceptanceTest extends TestCase
 {
     /**
      * @param mixed        $data
      * @param list<object> $patchData
      * @param mixed        $expectedData
-     * @dataProvider providerValidSpecPatch
      * @throws ProcessorExceptionInterface
      */
+    #[DataProvider('providerValidSpecPatch')]
     public function testApply_ValidSpecPatch_Applied(mixed $data, array $patchData, mixed $expectedData): void
     {
         $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
@@ -74,9 +74,9 @@ class AcceptanceTest extends TestCase
     /**
      * @param mixed        $data
      * @param list<object> $patchData
-     * @dataProvider providerInvalidPatch
      * @throws ProcessorExceptionInterface
      */
+    #[DataProvider('providerInvalidPatch')]
     public function testApply_InvalidSpecPatch_ExceptionThrown(mixed $data, array $patchData): void
     {
         $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
@@ -124,9 +124,9 @@ class AcceptanceTest extends TestCase
      * @param mixed        $data
      * @param list<object> $patchData
      * @param mixed        $expectedData
-     * @dataProvider providerValidPatch
      * @throws ProcessorExceptionInterface
      */
+    #[DataProvider('providerValidPatch')]
     public function testApply_ValidPatch_Applied(mixed $data, array $patchData, mixed $expectedData): void
     {
         $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();
@@ -176,9 +176,9 @@ class AcceptanceTest extends TestCase
     /**
      * @param mixed        $data
      * @param list<object> $patchData
-     * @dataProvider providerInvalidPatch
      * @throws ProcessorExceptionInterface
      */
+    #[DataProvider('providerInvalidPatch')]
     public function testApply_InvalidPatch_ExceptionThrown(mixed $data, array $patchData): void
     {
         $decodedNodeValueFactory = DecodedJsonNodeValueFactory::create();

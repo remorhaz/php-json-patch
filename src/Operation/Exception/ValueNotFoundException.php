@@ -10,13 +10,12 @@ use Throwable;
 final class ValueNotFoundException extends RuntimeException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
+        private readonly int $index,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: value not found in 'value' property",
-            0,
-            $previous,
+            message: "Operation #$this->index: value not found in 'value' property",
+            previous: $previous,
         );
     }
 

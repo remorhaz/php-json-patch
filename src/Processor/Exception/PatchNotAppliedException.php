@@ -11,6 +11,6 @@ final class PatchNotAppliedException extends RuntimeException implements Excepti
 {
     public function __construct(?Throwable $previous = null)
     {
-        parent::__construct("Failed to apply patch", 0, $previous);
+        parent::__construct("Failed to apply patch", previous: $previous);
     }
 }

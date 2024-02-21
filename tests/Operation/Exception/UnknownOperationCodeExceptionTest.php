@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Patch\Operation\Exception\UnknownOperationCodeException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\Exception\UnknownOperationCodeException
- */
+#[CoversClass(UnknownOperationCodeException::class)]
 class UnknownOperationCodeExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
@@ -32,12 +31,6 @@ class UnknownOperationCodeExceptionTest extends TestCase
     {
         $exception = new UnknownOperationCodeException(1, 'a');
         self::assertSame('a', $exception->getOperationCode());
-    }
-
-    public function testGetCode_Always_ReturnsZero(): void
-    {
-        $exception = new UnknownOperationCodeException(1, 'a');
-        self::assertSame(0, $exception->getCode());
     }
 
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void

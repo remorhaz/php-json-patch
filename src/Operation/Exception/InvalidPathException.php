@@ -10,15 +10,14 @@ use UnexpectedValueException;
 final class InvalidPathException extends UnexpectedValueException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
-        private string $property,
-        private mixed $path,
+        private readonly int $index,
+        private readonly string $property,
+        private readonly mixed $path,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: JSON pointer in '$this->property' property must be a string",
-            0,
-            $previous,
+            message: "Operation #$this->index: JSON pointer in '$this->property' property must be a string",
+            previous: $previous,
         );
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Query;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Export\ValueDecoderInterface;
 use Remorhaz\JSON\Data\Export\ValueEncoderInterface;
@@ -20,9 +21,7 @@ use Remorhaz\JSON\Patch\Query\Exception\OperationNotLoadedException;
 use Remorhaz\JSON\Patch\Query\LazyQuery;
 use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterface;
 
-/**
- * @covers  \Remorhaz\JSON\Patch\Query\LazyQuery
- */
+#[CoversClass(LazyQuery::class)]
 class LazyQueryTest extends TestCase
 {
     /**

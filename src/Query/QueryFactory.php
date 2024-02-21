@@ -34,9 +34,9 @@ final class QueryFactory implements QueryFactoryInterface
     }
 
     public function __construct(
-        private OperationFactoryInterface $operationFactory,
-        private ValueEncoderInterface $encoder,
-        private ValueDecoderInterface $decoder,
+        private readonly OperationFactoryInterface $operationFactory,
+        private readonly ValueEncoderInterface $encoder,
+        private readonly ValueDecoderInterface $decoder,
     ) {
     }
 

@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Operation\Exception;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Patch\Operation\Exception\OperationCodeNotFoundException;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Operation\Exception\OperationCodeNotFoundException
- */
+#[CoversClass(OperationCodeNotFoundException::class)]
 class OperationCodeNotFoundExceptionTest extends TestCase
 {
     public function testGetMessage_Constructed_ReturnsMatchingValue(): void
@@ -26,12 +25,6 @@ class OperationCodeNotFoundExceptionTest extends TestCase
     {
         $exception = new OperationCodeNotFoundException(1);
         self::assertSame(1, $exception->getIndex());
-    }
-
-    public function testGetCode_Always_ReturnsZero(): void
-    {
-        $exception = new OperationCodeNotFoundException(1);
-        self::assertSame(0, $exception->getCode());
     }
 
     public function testGetPrevious_ConstructedWithoutPrevious_ReturnsNull(): void

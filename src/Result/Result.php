@@ -11,9 +11,9 @@ use Remorhaz\JSON\Data\Value\NodeValueInterface;
 final class Result implements ResultInterface
 {
     public function __construct(
-        private NodeValueInterface $value,
-        private ValueEncoderInterface $encoder,
-        private ValueDecoderInterface $decoder,
+        private readonly NodeValueInterface $value,
+        private readonly ValueEncoderInterface $encoder,
+        private readonly ValueDecoderInterface $decoder,
     ) {
     }
 

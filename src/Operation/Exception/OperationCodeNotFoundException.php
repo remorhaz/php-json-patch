@@ -10,13 +10,12 @@ use Throwable;
 final class OperationCodeNotFoundException extends RuntimeException implements ExceptionInterface
 {
     public function __construct(
-        private int $index,
+        private readonly int $index,
         ?Throwable $previous = null,
     ) {
         parent::__construct(
-            "Operation #$this->index: operation code not found in property 'op'",
-            0,
-            $previous,
+            message: "Operation #$this->index: operation code not found in property 'op'",
+            previous: $previous,
         );
     }
 

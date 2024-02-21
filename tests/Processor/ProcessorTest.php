@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Remorhaz\JSON\Patch\Test\Processor;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Remorhaz\JSON\Data\Value\NodeValueInterface;
 use Remorhaz\JSON\Patch\Processor\Exception\ExceptionInterface as ProcessorExceptionInterface;
@@ -14,9 +15,7 @@ use Remorhaz\JSON\Patch\Query\QueryInterface;
 use Remorhaz\JSON\Patch\Result\ResultInterface;
 use Remorhaz\JSON\Pointer\Processor\ProcessorInterface as PointerProcessorInterface;
 
-/**
- * @covers \Remorhaz\JSON\Patch\Processor\Processor
- */
+#[CoversClass(Processor::class)]
 class ProcessorTest extends TestCase
 {
     public function testCreate_Always_ReturnsProcessorInstance(): void

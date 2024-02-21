@@ -11,10 +11,10 @@ use UnexpectedValueException;
 final class InvalidPatchException extends UnexpectedValueException implements ExceptionInterface
 {
     public function __construct(
-        private NodeValueInterface $patch,
+        private readonly NodeValueInterface $patch,
         ?Throwable $previous = null,
     ) {
-        parent::__construct("Patch must be an array", 0, $previous);
+        parent::__construct("Patch must be an array", previous: $previous);
     }
 
     public function getPatch(): NodeValueInterface

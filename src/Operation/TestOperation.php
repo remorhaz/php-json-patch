@@ -13,10 +13,10 @@ use Remorhaz\JSON\Pointer\Query\QueryInterface as PointerQueryInterface;
 final class TestOperation implements OperationInterface
 {
     public function __construct(
-        private int $index,
-        private PointerQueryInterface $pathPointer,
-        private NodeValueInterface $value,
-        private ComparatorInterface $equalComparator,
+        private readonly int $index,
+        private readonly PointerQueryInterface $pathPointer,
+        private readonly NodeValueInterface $value,
+        private readonly ComparatorInterface $equalComparator,
     ) {
     }
 
